@@ -19,9 +19,9 @@ $slug = $jckFundraisers->slug;
     <h2>Select your reward</h2>
     
     <ul class="<?= $slug; ?>-rewards">
-        <? $rid = 0; foreach($rewards as $reward): ?>
+        <? foreach($rewards as $reward): ?>
             <li class="jckf-reward">
-                <a class="<?= $slug; ?>-reward__link <?= $slug; ?>-reward__link--donate" href="#<?= $slug; ?>-add-to-cart-form" data-amount="<?= $reward['amount']+5; ?>" data-reward-id="<?= $rid; ?>">
+                <a class="<?= $slug; ?>-reward__link <?= $slug; ?>-reward__link--donate" href="#<?= $slug; ?>-add-to-cart-form" data-amount="<?= $reward['amount']+5; ?>" data-reward-id="<?= $reward['unique']; ?>">
                     <span class="<?= $slug; ?>-reward__select"><span class="<?= $slug; ?>-reward__select-text">Select this Reward</span></span>
                     
                     <? if(isset($reward['limit']) && $reward['limit'] != "") { ?>
@@ -38,6 +38,6 @@ $slug = $jckFundraisers->slug;
                     <? } ?>
                 </a>
             </li>
-        <? $rid++; endforeach; ?>
+        <? endforeach; ?>
     </ul>
 <? endif; ?>

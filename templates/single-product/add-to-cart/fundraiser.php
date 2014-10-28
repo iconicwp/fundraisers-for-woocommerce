@@ -28,7 +28,7 @@ if ( ! $product->is_purchasable() ) return;
 
 <?php if ( $product->is_in_stock() ) : ?>
     
-    <a href="#<?= $slug; ?>-add-to-cart-form" class="single_add_to_cart_button button alt <?= $slug; ?>-donate-btn"><?php echo $product->single_add_to_cart_text(); ?></a>
+    <a href="#<?= $slug; ?>-add-to-cart-form" class="single_add_to_cart_button button alt <?= $slug; ?>-donate-btn <?= $slug; ?>-donate-btn--primary"><?php echo $product->single_add_to_cart_text(); ?></a>
     
     <div id="<?= $slug; ?>-add-to-cart-form" class="<?= $slug; ?>-add-to-cart-form mfp-hide">
 
@@ -38,7 +38,7 @@ if ( ! $product->is_purchasable() ) return;
     	 	<?php do_action( 'woocommerce_before_add_to_cart_button' ); ?>
     
     	 	<input type="hidden" name="add-to-cart" value="<?php echo esc_attr( $product->id ); ?>" />
-    	 	<input type="hidden" name="reward" value="002" />
+    	 	<input type="hidden" class="<?= $slug; ?>-reward-feild" name="reward" value="002" />
     	 	
     	 	<h2>Enter your donation amount</h2>
     	 	
