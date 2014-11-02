@@ -25,28 +25,42 @@
         	{
             	$(this).removeClass('jckf-reward__link--hover');
         	}
-    	}, '.jckf-reward__link');
+    	}, '.jckf-reward__link:not(.jckf-reward-unavailable)');
 	}	
 	
 	function setupRewardLinks()
 	{
-	    var $rewardLinks = $('.jckf-reward__link'),
+	    var $rewardLinks = $('.jckf-reward__link').not('.jckf-reward-unavailable'),
 	        $donationField = $('.jckf-donation-field'),
 	        $rewardField = $('.jckf-reward-feild');
 	    
         $rewardLinks.on('click', function(){
             var amount = parseInt($(this).attr('data-amount')),
                 currAmount = ($donationField.val() != "") ? parseInt($donationField.val()) : 0,
-                uniqueId = $(this).attr('data-reward-id');
+                uniqueId = $(this).attr('data-reward-id'),
+                $selected = $('.jckf-reward__link.selected');
+            
+            // Update donation field if value is more than currently entered
             
             if(amount >= currAmount)
             {
                 $donationField.val(amount);
             }
             
+            // Update reward ID field
+            
             $rewardField.val(uniqueId);
             
-            // @todo Add selected class
+            // Add selected class and flag
+            
+            if($selected.length > 0)
+            {
+                $selected.each(function(){
+                   $(this).removeClass('selected').find('.jckf-reward__selected').remove(); 
+                });
+            }
+            
+            $('[data-reward-id="'+uniqueId+'"]').addClass('selected').prepend($('<div class="jckf-reward-flag jckf-reward__selected">Selected</div>'));
         });	
 	}
 	

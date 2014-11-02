@@ -21,6 +21,12 @@
             background: #efeff0;
             padding: 15px;
             color: #333;
+            position: relative;
+        }
+        
+        .jckf-reward-unavailable {
+            cursor: default;
+            opacity: 0.5;
         }
             
         .jckf-reward__link:hover {
@@ -35,15 +41,28 @@
                 margin-bottom: 0;
             }
             
-            .jckf-reward__limit {
+            .jckf-reward-flag {
                 position: absolute;
                 top: 0;
                 right: 15px;
                 font-size: 12px;
                 padding: 0 10px;
-                background: #dbdbdc;
                 border-radius: 0 0 5px 5px;
                 line-height: 20px;
+            }
+            
+            .jckf-reward__limit {
+                background: #dbdbdc;
+                color: #333;
+            }
+                
+                .selected .jckf-reward__limit {
+                    display: none;
+                }
+            
+            .jckf-reward__selected {
+                background: #53a1b8;
+                color: #fff;
             }
             
             .jckf-reward__donate {
@@ -169,3 +188,18 @@
                         width: auto;
                         margin: 20px 0 0;
                     }
+.jckf-stats {
+    margin-bottom: 25px;
+    overflow: hidden;
+}
+
+    .jckf-stat {
+        margin-bottom: 10px;
+    }
+    
+        .jckf-stat strong {
+            display: block;
+            font-size: 200%;
+            line-height: 1;
+            font-weight: bold;
+        }

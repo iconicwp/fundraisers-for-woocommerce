@@ -70,7 +70,22 @@ if(class_exists('WC_Product')):
     	
     	public function is_purchasable()
     	{
-    		return apply_filters( 'woocommerce_is_purchasable', true, $this );
+        	$purchasable = true;
+        	
+        	$fundData = $this->get_fund_data();
+        	$goalData = $fundData['goal'];
+        	$salesData = $this->get_sales_data();
+        	
+        	if($goalData['type'] == 'target_date' || $goalData['type'] == 'target_goal_date')
+        	{
+            	if($this->get_days_remaining() < 0) $purchasable = false;
+        	}
+        	elseif($goalData['type'] == 'target_goal')
+        	{
+            	if($salesData['total_raised'] >= $goalData['amount']) $purchasable = false;
+        	}
+        	
+    		return apply_filters( 'woocommerce_is_purchasable', $purchasable, $this );
     	}
     
     /**	=============================
@@ -84,18 +99,18 @@ if(class_exists('WC_Product')):
        	
        	public function get_fund_data()
        	{
-           	global $post, $product, $jckFundraisers;
+           	global $jckFundraisers;
            	
            	$return = false;
            	
-           	if($product->product_type == "fundraiser"):
+           	if($this->product_type == "fundraiser"):
            	 
            	    $return = array(
            	        'rewards' => false,
            	        'goal' => false
            	    );
            	
-           	    $fundData = get_post_meta($post->ID, $jckFundraisers->slug, true);
+           	    $fundData = get_post_meta($this->id, $jckFundraisers->slug, true);
                    
                 $return['goal'] = (isset($fundData['goal'])) ? $fundData['goal'] : false;
                 $return['rewards'] = (isset($fundData['rewards'])) ? $fundData['rewards']['rewards'] : false;
@@ -120,7 +135,11 @@ if(class_exists('WC_Product')):
        	 
        	    $salesData = $this->get_sales_data();
        	    
-       	    $totalDonationsHtml = '<p>' . sprintf( _n( '1 donation', '%s donations', $salesData['total_processed_sales'], $jckFundraisers->slug ), $salesData['total_processed_sales'] ) . '</p>';
+       	    $totalDonationsHtml = sprintf( 
+       	       '<p class="'.$jckFundraisers->slug.'-stat '.$jckFundraisers->slug.'-stat--total-donations"><strong>%s</strong> %s</p>',
+       	       $salesData['total_processed_sales'],
+       	       _n( 'donation', 'donations', $salesData['total_processed_sales'], $jckFundraisers->slug )
+       	    );
        	    
        	    return apply_filters( $jckFundraisers->slug.'_total_donations', $totalDonationsHtml );
        	}
@@ -146,37 +165,65 @@ if(class_exists('WC_Product')):
             
             // @todo - Check if there is a monetary goal. if not, don't show the "of %s goal" part
             
-            $totalRaisedHtml = '<p>' . sprintf( __( '%s raised of %s goal', $jckFundraisers->slug ), $totalRaised, $goalAmount ) . '</p>';
+            $totalRaisedHtml = sprintf(
+                '<p class="'.$jckFundraisers->slug.'-stat '.$jckFundraisers->slug.'-stat--total-raised"><strong>%s</strong> %s %s</p>',
+                $totalRaised,
+                __('raised', $jckFundraisers->slug),
+                sprintf( __('of %s goal', $jckFundraisers->slug), $goalAmount)
+            );
             
             return apply_filters( $jckFundraisers->slug.'_total_raised', $totalRaisedHtml, $totalRaised, $goalAmount );
        	}
     
     /**	=============================
-       	*
-       	* Returns html for days remaining
-    	*
-       	* @access public
-       	* @return string
-       	*
-       	============================= */
-       	
-       	public function get_days_remaining_html()
-       	{
-       	    global $jckFundraisers;
-       	    
-       	    $fundData = $this->get_fund_data();
-       	    
-           	$daylen = 60*60*24;
-                
+        *
+        * Returns days remaining
+        *
+        * @access public
+        * @return string
+        *
+        ============================= */
+        
+        public function get_days_remaining()
+        {
+            global $jckFundraisers;
+            
+            $fundData = $this->get_fund_data();
+            
+            $daylen = 60*60*24;
+            
             $now = date('Y-m-d');
             $target = $fundData['goal']['end'];
             
             $daysRemaining = (strtotime($target)-strtotime($now))/$daylen;
             
-            $daysRemainingHtml = '<p>' .  sprintf( _n( '1 day to go', '%s days to go', $daysRemaining, $jckFundraisers->slug ), $daysRemaining ) . '</p>';
+            return $daysRemaining;
+        }
+    
+    /**	=============================
+        *
+        * Returns html for days remaining
+        *
+        * @access public
+        * @return string
+        *
+        ============================= */
+        
+        public function get_days_remaining_html()
+        {
+            global $jckFundraisers;
+            
+            $daysRemaining = $this->get_days_remaining();
+            $daysRemaining = ($daysRemaining > 0) ? $daysRemaining : 0;
+            
+            $daysRemainingHtml = sprintf( 
+                '<p class="'.$jckFundraisers->slug.'-stat '.$jckFundraisers->slug.'-stat--days-remaining"><strong>%s</strong> %s</p>',
+                $daysRemaining,
+                _n( 'day to go', 'days to go', $daysRemaining, $jckFundraisers->slug )
+            );
             
             return apply_filters( $jckFundraisers->slug.'_days_remaining', $daysRemainingHtml, $daysRemaining );
-       	}
+        }
 
     /**	=============================
        	*
@@ -188,9 +235,9 @@ if(class_exists('WC_Product')):
        	
        	public function get_rewards()
        	{
-           	global $post, $jckFundraisers;
+           	global $jckFundraisers;
 
-            $fundData = get_post_meta($post->ID, $jckFundraisers->slug, true);
+            $fundData = get_post_meta($this->id, $jckFundraisers->slug, true);
             $rewardsType = (isset($fundData['rewards'])) ? $fundData['rewards']['type'] : false;
             
             if($rewardsType == "rewards") {
@@ -209,16 +256,40 @@ if(class_exists('WC_Product')):
             }
             
             return false;
-       	}
+        }
     
     /**	=============================
        	*
-       	* Returns the fundraiser sales data
+       	* Returns an array of awards, or false if there are none
     	*
-       	* @access public
-       	* @return array
+       	* @return array|bool
        	*
        	============================= */
+       	
+       	public function get_reward($rewardId)
+       	{
+            $rewards = $this->get_rewards();
+            
+            if($rewards && !empty($rewards))
+            {
+                foreach($rewards as $key => $reward)
+                {
+                    if($reward['unique'] == $rewardId)
+                        return $rewards[$key];
+                }            
+            }
+            
+            return false;
+        }
+    
+    /**	=============================
+        *
+        * Returns the fundraiser sales data
+        *
+        * @access public
+        * @return array
+        *
+        ============================= */
     	
     	public function get_sales_data() {
         	global $wpdb;
@@ -295,21 +366,47 @@ if(class_exists('WC_Product')):
             // for this particular product id
             
             // Now we just need to add up the line totals for all completed/processing orders
+            // We will also count each reward ID so we have a value to use for the limits
             
             $totalRaised = 0;
+            $rewardsClaimed = array();
             
             if(!empty($orderItemMataClean)):
                 foreach($orderItemMataClean as $orderItemId => $orderItemMeta):
                 
                     $totalRaised = $totalRaised+$orderItemMeta['_line_total'];
                     
+                    // Tot up the rewards claimed
+                    if(isset($orderItemMeta['Reward'])) 
+                    {
+                        $claimedCount = (isset($rewardsClaimed[$orderItemMeta['Reward']])) ? (int)$rewardsClaimed[$orderItemMeta['Reward']] : 0;
+                        $rewardsClaimed[$orderItemMeta['Reward']] = $claimedCount+1;
+                    }
+                    
                 endforeach;
             endif;
             
             return array(
                 'total_raised' => $totalRaised,
-                'total_processed_sales' => count($orderItemMataClean)
+                'total_processed_sales' => count($orderItemMataClean),
+                'rewards_claimed' => $rewardsClaimed
             );
     	}
+    	
+    /**	=============================
+        *
+        * 
+        *
+        ============================= */
+        
+        public function get_rewards_claimed($rewardId)
+        {
+            if(!$rewardId || $rewardId == "")
+                return;
+                
+            $salesData = $this->get_sales_data();
+            
+            return (isset($salesData['rewards_claimed'][$rewardId])) ? $salesData['rewards_claimed'][$rewardId] : 0;
+        }
     }
 endif;

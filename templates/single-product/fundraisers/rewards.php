@@ -20,12 +20,18 @@ $slug = $jckFundraisers->slug;
     
     <ul class="<?= $slug; ?>-rewards">
         <? foreach($rewards as $reward): ?>
+            
+            <?
+            $rewardsClaimed = $product->get_rewards_claimed($reward['unique']);
+            $remaining = (isset($reward['limit']) && $reward['limit'] != "") ? $reward['limit']-$rewardsClaimed : -1;
+            ?>
+            
             <li class="jckf-reward">
-                <a class="<?= $slug; ?>-reward__link <?= $slug; ?>-reward__link--donate" href="#<?= $slug; ?>-add-to-cart-form" data-amount="<?= $reward['amount']+5; ?>" data-reward-id="<?= $reward['unique']; ?>">
+                <a class="<?= $slug; ?>-reward__link <?= $slug; ?>-reward__link--donate <? if($remaining == 0) echo $slug.'-reward-unavailable'; ?>" href="#<?= $slug; ?>-add-to-cart-form" data-amount="<?= $reward['amount']+5; ?>" data-reward-id="<?= $reward['unique']; ?>">
                     <span class="<?= $slug; ?>-reward__select"><span class="<?= $slug; ?>-reward__select-text">Select this Reward</span></span>
                     
                     <? if(isset($reward['limit']) && $reward['limit'] != "") { ?>
-                        <div class="<?= $slug; ?>-reward__limit"><?= $reward['limit']; ?> left of <?= $reward['limit']; ?></div>
+                        <div class="<?= $slug; ?>-reward-flag <?= $slug; ?>-reward__limit"><?= $remaining; ?> left of <?= $reward['limit']; ?></div>
                     <? } ?>
                     <? if(isset($reward['amount']) && $reward['amount'] != "") { ?>
                         <div class="<?= $slug; ?>-reward__donate">Donate <?= wc_price($reward['amount']); ?> or more</div>
