@@ -1,6 +1,6 @@
 .jckf-rewards {
     list-style: none none outside;
-    margin: 0;
+    margin: 0 0 20px;
     padding: 0;
 }
     
@@ -16,12 +16,18 @@
         border: none;
     }
     
-        .jckf-reward__link {
+        a.jckf-reward__link {
             display: block;
             background: #efeff0;
             padding: 15px;
             color: #333;
             position: relative;
+            text-decoration: none;
+        }
+        
+        a.jckf-reward__link:hover {
+            color: #333;
+            text-decoration: none;
         }
         
         .jckf-reward-unavailable {
@@ -140,6 +146,10 @@
                 background: none;
             }
                 
+                .jckf-add-to-cart-form h2 {
+                    margin: 0 0 20px;
+                }
+                
                 .jckf-donation-field-wrap {
                     position: relative;
                     margin: 0 0 20px;
@@ -168,6 +178,8 @@
                         box-sizing: border-box;
                         font-size: 18px;
                         height: 56px;
+                        width: 100%;
+                        display: block;
                     }
                     
                     .jckf-donation-field--currency-left,
@@ -186,7 +198,7 @@
                         float: right;
                         display: inline;
                         width: auto;
-                        margin: 20px 0 0;
+                        margin: 0;
                     }
 .jckf-stats {
     margin-bottom: 25px;

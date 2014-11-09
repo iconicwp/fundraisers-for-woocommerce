@@ -17,39 +17,39 @@ if(class_exists('WC_Product')):
     class WC_Product_Fundraiser extends WC_Product {
     
     /**	=============================
-       	*
-       	* __construct function.
-    	*
-       	* @access public
+        *
+        * __construct function.
+        *
+        * @access public
         * @param mixed $product
-       	*
-       	============================= */
-    
-    	public function __construct( $product ) {
-    		$this->product_type = 'fundraiser';
-    		parent::__construct( $product );
-    	}
+        *
+        ============================= */
+        
+        public function __construct( $product ) {
+            $this->product_type = 'fundraiser';
+            parent::__construct( $product );
+        }
 
     /**	=============================
-       	*
-       	* Change Add to Cart Button text
-    	*
+        *
+        * Change Add to Cart Button text
+        *
         * @return string
-       	*
-       	============================= */
-    	
-    	public function single_add_to_cart_text() {
+        *
+        ============================= */
+        
+        public function single_add_to_cart_text() {
             return __( 'Donate', 'woocommerce' );
         }
     
     /**	=============================
-       	*
-       	* Get the add to url used mainly in loops.
-    	*
-       	* @access public
+        *
+        * Get the add to url used mainly in loops.
+        *
+        * @access public
         * @return string
-       	*
-       	============================= */
+        *
+        ============================= */
     	
     	public function add_to_cart_url() {
     		$url = $this->is_purchasable() && $this->is_in_stock() ? remove_query_arg( 'added-to-cart', add_query_arg( 'add-to-cart', $this->id ) ) : get_permalink( $this->id );
@@ -60,13 +60,13 @@ if(class_exists('WC_Product')):
     	}
     
     /**	=============================
-       	*
-       	* Returns false if the product cannot be bought.
-    	*
-       	* @access public
-       	* @return bool
-       	*
-       	============================= */
+        *
+        * Returns false if the product cannot be bought.
+        *
+        * @access public
+        * @return bool
+        *
+        ============================= */
     	
     	public function is_purchasable()
     	{
@@ -89,78 +89,78 @@ if(class_exists('WC_Product')):
     	}
     
     /**	=============================
-       	*
-       	* Returns formatted product fund data
-    	*
-       	* @access public
-       	* @return array
-       	*
-       	============================= */
-       	
-       	public function get_fund_data()
-       	{
-           	global $jckFundraisers;
-           	
-           	$return = false;
-           	
-           	if($this->product_type == "fundraiser"):
-           	 
-           	    $return = array(
-           	        'rewards' => false,
-           	        'goal' => false
-           	    );
-           	
-           	    $fundData = get_post_meta($this->id, $jckFundraisers->slug, true);
-                   
-                $return['goal'] = (isset($fundData['goal'])) ? $fundData['goal'] : false;
-                $return['rewards'] = (isset($fundData['rewards'])) ? $fundData['rewards']['rewards'] : false;
+        *
+        * Returns formatted product fund data
+        *
+        * @access public
+        * @return array
+        *
+        ============================= */
+        
+        public function get_fund_data()
+        {
+            global $jckFundraisers;
+            
+            $return = false;
+            
+            if($this->product_type == "fundraiser"):
+            
+                $return = array(
+                    'rewards' => false,
+                    'goal' => false
+                );
                 
-           	endif;
-           	
-           	return $return;
-       	}
+                $fundData = get_post_meta($this->id, $jckFundraisers->slug, true);
+                
+                $return['goal'] = (isset($fundData['goal'])) ? $fundData['goal'] : false;
+                $return['rewards'] = (isset($fundData['rewards'])) ? $fundData['rewards'] : false;
+            
+            endif;
+            
+            return $return;
+        }
     
     /**	=============================
-       	*
-       	* Returns html for total donations count
-    	*
-       	* @access public
-       	* @return string
-       	*
-       	============================= */
+        *
+        * Returns html for total donations count
+        *
+        * @access public
+        * @return string
+        *
+        ============================= */
        	
-       	public function get_total_donations_html()
-       	{
-       	    global $jckFundraisers;
-       	 
-       	    $salesData = $this->get_sales_data();
-       	    
-       	    $totalDonationsHtml = sprintf( 
-       	       '<p class="'.$jckFundraisers->slug.'-stat '.$jckFundraisers->slug.'-stat--total-donations"><strong>%s</strong> %s</p>',
-       	       $salesData['total_processed_sales'],
-       	       _n( 'donation', 'donations', $salesData['total_processed_sales'], $jckFundraisers->slug )
-       	    );
-       	    
-       	    return apply_filters( $jckFundraisers->slug.'_total_donations', $totalDonationsHtml );
-       	}
+        public function get_total_donations_html()
+        {
+            global $jckFundraisers;
+            
+            $salesData = $this->get_sales_data();
+            
+            $totalDonationsHtml = sprintf( 
+                '<p class="'.$jckFundraisers->slug.'-stat '.$jckFundraisers->slug.'-stat--total-donations"><strong>%s</strong> %s</p>',
+                $salesData['total_processed_sales'],
+                _n( 'donation', 'donations', $salesData['total_processed_sales'], $jckFundraisers->slug )
+            );
+            
+            return apply_filters( $jckFundraisers->slug.'_total_donations', $totalDonationsHtml );
+        }
     
     /**	=============================
-       	*
-       	* Returns html for total raised value
-    	*
-       	* @access public
-       	* @return string
-       	*
-       	============================= */
+        *
+        * Returns html for total raised value
+        *
+        * @access public
+        * @return string
+        *
+        ============================= */
        	
-       	public function get_total_raised_html()
-       	{
-       	    global $jckFundraisers;
-       	 
-       	    $salesData = $this->get_sales_data();
-       	    $fundData = $this->get_fund_data();
-       	    
-           	$totalRaised = wc_price($salesData['total_raised']);
+        public function get_total_raised_html()
+        {
+            global $jckFundraisers;
+            
+            $salesData = $this->get_sales_data();
+            $fundData = $this->get_fund_data();
+            
+            $totalRaised = wc_price($salesData['total_raised']);
             $goalAmount = wc_price($fundData['goal']['amount']);
             
             // @todo - Check if there is a monetary goal. if not, don't show the "of %s goal" part
@@ -173,7 +173,7 @@ if(class_exists('WC_Product')):
             );
             
             return apply_filters( $jckFundraisers->slug.'_total_raised', $totalRaisedHtml, $totalRaised, $goalAmount );
-       	}
+        }
     
     /**	=============================
         *
@@ -226,17 +226,17 @@ if(class_exists('WC_Product')):
         }
 
     /**	=============================
-       	*
-       	* Returns an array of awards, or false if there are none
-    	*
-       	* @return array|bool
-       	*
-       	============================= */
+        *
+        * Returns an array of awards, or false if there are none
+        *
+        * @return array|bool
+        *
+        ============================= */
        	
-       	public function get_rewards()
-       	{
-           	global $jckFundraisers;
-
+        public function get_rewards()
+        {
+            global $jckFundraisers;
+        
             $fundData = get_post_meta($this->id, $jckFundraisers->slug, true);
             $rewardsType = (isset($fundData['rewards'])) ? $fundData['rewards']['type'] : false;
             
@@ -259,15 +259,15 @@ if(class_exists('WC_Product')):
         }
     
     /**	=============================
-       	*
-       	* Returns an array of awards, or false if there are none
-    	*
-       	* @return array|bool
-       	*
-       	============================= */
-       	
-       	public function get_reward($rewardId)
-       	{
+        *
+        * Returns an array of awards, or false if there are none
+        *
+        * @return array|bool
+        *
+        ============================= */
+        
+        public function get_reward($rewardId)
+        {
             $rewards = $this->get_rewards();
             
             if($rewards && !empty($rewards))
@@ -377,10 +377,10 @@ if(class_exists('WC_Product')):
                     $totalRaised = $totalRaised+$orderItemMeta['_line_total'];
                     
                     // Tot up the rewards claimed
-                    if(isset($orderItemMeta['Reward'])) 
+                    if(isset($orderItemMeta['Reward ID'])) 
                     {
-                        $claimedCount = (isset($rewardsClaimed[$orderItemMeta['Reward']])) ? (int)$rewardsClaimed[$orderItemMeta['Reward']] : 0;
-                        $rewardsClaimed[$orderItemMeta['Reward']] = $claimedCount+1;
+                        $claimedCount = (isset($rewardsClaimed[$orderItemMeta['Reward ID']])) ? (int)$rewardsClaimed[$orderItemMeta['Reward ID']] : 0;
+                        $rewardsClaimed[$orderItemMeta['Reward ID']] = $claimedCount+1;
                     }
                     
                 endforeach;
@@ -389,13 +389,18 @@ if(class_exists('WC_Product')):
             return array(
                 'total_raised' => $totalRaised,
                 'total_processed_sales' => count($orderItemMataClean),
-                'rewards_claimed' => $rewardsClaimed
+                'rewards_claimed' => $rewardsClaimed,
+                'donations' => $orderItemMataClean
             );
     	}
     	
     /**	=============================
         *
+        * Get Rewards Claimed
         * 
+        * Gets the total number of rewards claimed
+        * for a specific reward ID on the current
+        * product
         *
         ============================= */
         

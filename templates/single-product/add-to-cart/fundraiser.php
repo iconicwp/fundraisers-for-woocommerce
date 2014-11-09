@@ -12,6 +12,8 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 global $product, $jckFundraisers;
 
 $slug = $jckFundraisers->slug;
+$fundData = $product->get_fund_data();
+$rewardType = (isset($fundData['rewards']['type'])) ? $fundData['rewards']['type'] : false;
 
 if ( ! $product->is_purchasable() ) return;
 ?>
@@ -38,7 +40,7 @@ if ( ! $product->is_purchasable() ) return;
     	 	<?php do_action( 'woocommerce_before_add_to_cart_button' ); ?>
     
     	 	<input type="hidden" name="add-to-cart" value="<?php echo esc_attr( $product->id ); ?>" />
-    	 	<input type="hidden" class="<?= $slug; ?>-reward-feild" name="reward" value="002" />
+    	 	<? if($rewardType == "rewards") { ?><input type="hidden" class="<?= $slug; ?>-reward-feild" name="reward" value="" /><? } ?>
     	 	
     	 	<h2>Enter your donation amount</h2>
     	 	

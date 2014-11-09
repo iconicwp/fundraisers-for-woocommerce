@@ -1,7 +1,6 @@
 <div id="fundraiser_goal_product_data" class="panel woocommerce_options_panel">    
     <? 
     $goalData = (isset($fundData['goal'])) ? $fundData['goal'] : false;
-    //var_dump($fundData); die;
     
     // Goal Type
     woocommerce_wp_select( 
@@ -10,7 +9,7 @@
             'label' => __( 'Goal Type', 'woocommerce' ), 
             'desc_tip' => 'true',
             'description' => sprintf( 
-                __( 'Choose a download type - this controls the <a href="%s">schema</a>.', 'woocommerce' ), 
+                __( 'Target Date - The fundraiser ends on this date.<br><br> Target Goal - The fundraiser ends when the goal is met.<br><br> Target Goal and Date - The fundraiser ends when the date is met. If the goal is met before the end date, the fundraiser will still continue.<br><br> Campaign Never Ends - The fundraiser never ends. A goal can be set, but the date is ignored.', 'woocommerce' ), 
                 'http://schema.org/' 
             ), 
             'value' => ($goalData ? $goalData['type'] : ''),
@@ -37,6 +36,7 @@
     woocommerce_wp_text_input( 
         array( 
             'id' => $this->slug.'[goal][amount]', 
+            'type' => 'number',
             'label' => __( 'Goal Amount', 'woocommerce' ) . ' (' . get_woocommerce_currency_symbol() . ')', 
             'data_type' => 'price',
             'value' => ($goalData ? $goalData['amount'] : '')

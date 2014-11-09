@@ -15,7 +15,7 @@ var paths = {
   frontendstyles: ['source/frontend/css/**/*.css'],
   adminscripts: ['source/admin/js/**/*.js'],
   adminstyles: ['source/admin/css/**/*.css'],
-  src: ['inc/**/*', 'assets/**/*', 'jck_woo_fundraisers.php'],
+  src: ['inc/**/*', 'assets/**/*', 'templates/**/*', 'jck_woo_fundraisers.php'],
   ccsrc: ['**/*']
 };
 

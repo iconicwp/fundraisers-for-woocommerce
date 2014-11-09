@@ -75,8 +75,9 @@ class jckFundraisers {
             add_filter( 'product_type_selector',                        array( &$this, 'add_product_type') );
             add_filter( 'woocommerce_product_data_tabs',                array( &$this, 'edit_admin_product_tabs') );
             add_action( 'woocommerce_product_write_panels',             array( &$this, 'admin_product_tab_content' ) );
-            add_action( 'woocommerce_process_product_meta',             array( &$this, 'process_product_tabs' ), 10, 2 );
+            add_action( 'woocommerce_process_product_meta_fundraiser',  array( &$this, 'process_product_tabs' ), 10, 2 );
             add_action( 'admin_enqueue_scripts',                        array( &$this, 'product_edit_page_scripts' ), 10, 1 );
+            add_action( 'admin_menu',                                   array( &$this, 'add_admin_pages' ) ); 
             
             // Filters for cart actions
             // This is loaded via ajax usually, so needs to be run in admin
@@ -98,10 +99,46 @@ class jckFundraisers {
             // Filters for cart actions
             add_filter( 'woocommerce_add_cart_item_data',               array(&$this, 'add_cart_item_data'), 10, 2);
             add_filter( 'woocommerce_get_item_data',                    array(&$this, 'get_item_data'), 10, 2);    
-            add_action( 'woocommerce_add_to_cart_validation',           array(&$this, 'max_item_quantity_validation'), 1, 3 );
+            add_action( 'woocommerce_add_to_cart_validation',           array(&$this, 'validate_donation'), 1, 3 );
         }
         
 	}
+
+/**	=============================
+    *
+    * Add Admin Pages
+    *
+    * @type admin
+    * @access public
+    *
+    ============================= */
+	
+	public function add_admin_pages()
+	{
+    	add_submenu_page( 'woocommerce', __('Donations', $this->slug), __('Donations', $this->slug), 'manage_woocommerce', $this->slug.'-donations', array( &$this, 'donations_list' ) );
+	}
+
+/**	=============================
+    *
+    * Donations Page
+    *
+    * This page lists all the donations that have been made,
+    * and allows the admin to see which rewards need to be
+    * shipped
+    *
+    * @type admin
+    * @access public
+    *
+    ============================= */
+    
+    public function donations_list()
+    {
+        if ( !current_user_can( 'manage_woocommerce' ) )  {
+			wp_die( __( 'You do not have sufficient permissions to access this page.', $this->slug ) );
+		}
+		
+		require_once($this->plugin_path.'/inc/admin-page-donations.php');
+    }
 
 /**	=============================
     *
@@ -247,14 +284,92 @@ class jckFundraisers {
     public function process_product_tabs( $post_id )
     {   
         $goal = (isset($_POST[$this->slug]['goal'])) ? $_POST[$this->slug]['goal'] : false;
-        $rewards = (isset($_POST[$this->slug]['rewards'])) ? $_POST[$this->slug]['rewards'] : false;
+        $rewardData = (isset($_POST[$this->slug]['rewards'])) ? $_POST[$this->slug]['rewards'] : false;
+        
+        // check if goal end date is valid
+        if($goal['end'] != "" && !$this->validate_date($goal['end'])):
+            
+            WC_Admin_Meta_Boxes::add_error( __( 'Please enter a valid goal end date (YYYY-MM-DD).', $this->slug ) );
+            return;
+            
+        endif;
+        
+        if(is_array($rewardData) && isset($rewardData['rewards']) && $rewardData['type'] != "no_rewards"):
+            
+            // check if each reward has a unique ID
+            $rewardIds = array();
+                
+            foreach($rewardData['rewards'] as $reward):
+                
+                // check if the reward ID is blank
+                // if it is, throw an error
+                if(trim($reward['unique']) == ""):
+                    
+                    WC_Admin_Meta_Boxes::add_error( __( 'Please enter a unique ID for each reward.', $this->slug ) );
+                    return;
+                    
+                endif;
+                
+                // check if the reward ID is in our array
+                if(!in_array($reward['unique'], $rewardIds)):
+                    
+                    $rewardIds[] = $reward['unique'];
+                    
+                // if the reward ID is in the array, don't 
+                // save the data and add an error
+                else:
+                    
+                    WC_Admin_Meta_Boxes::add_error( __( 'Sorry, each reward ID must be unique.', $this->slug ) );
+                    return;
+                    
+                endif;
+                
+                // check if the date is valid
+                if($reward['delivery'] != "" && !$this->validate_date($reward['delivery'])):
+                    
+                    WC_Admin_Meta_Boxes::add_error( __( 'Please enter a valid estimated delivery date (YYYY-MM-DD).', $this->slug ) );
+                    return;
+                    
+                endif;                    
+                
+            endforeach;
+        
+        endif;
         
         $fundData = array(
             'goal' => $goal,
-            'rewards' => $rewards
+            'rewards' => $rewardData
         );
         
         update_post_meta( $post_id, $this->slug, $fundData);
+    }
+
+/**	=============================
+    *
+    * Validate Date
+    *
+    * Check if a date is in YYYY-MM-DD format
+    *
+    * @access public
+    * @return bool
+    *
+    ============================= */
+    
+    public function validate_date($date)
+    {
+        $date = explode('-', $date);
+        
+        $day = (int)$date[2];
+        $month = (int)$date[1];
+        $year = (int)$date[0];
+        
+        if(!is_array($date) || count($date) != 3)
+            return false;
+            
+        if(!is_int($day) || !is_int($month) || !is_int($year))
+            return false;
+        
+        return checkdate( $month, $day, $year);
     }
 
 /**	=============================
@@ -464,11 +579,52 @@ class jckFundraisers {
     *
     ============================= */
     
-    public function max_item_quantity_validation( $passed, $product_id, $quantity )
+    public function validate_donation( $passed, $product_id, $quantity )
     {
         global $woocommerce;
+        
+        // validate donation amount
+        if( isset($_POST['price']) && $_POST['price'] <= 0 )
+        {
+            wc_add_notice( __( "Please enter a valid donation amount.", $this->slug ), 'error' );            
+            return false;
+        }
+        
+        // check if donation amount allows for selected reward
+        if( isset($_POST['price']) && ( isset($_POST['reward']) && $_POST['reward'] != "" ) )
+        {
+            $product = get_product( $product_id );            
+            $theReward = $product->get_reward($_POST['reward']);
+            
+            if($theReward)
+            {
+                
+                if($_POST['price'] < $theReward['amount'])
+                {
+                    wc_add_notice( 
+                        sprintf( 
+                            __( "Your selected reward requires a donation of at least %s.", $this->slug ),
+                            wc_price($theReward['amount'])
+                        ), 
+                        'error' 
+                    );            
+                    return false;
+                }
+            
+            }
+            else
+            {
+                
+                wc_add_notice( __( "Please choose a valid reward.", $this->slug ), 'error' );            
+                return false;
+            
+            }
+        }
+        
+        // check that there is only 1 of this item in the cart
 		$woocommerce_max_qty = 1;
 		$already_in_cart = $this->get_qty_alread_in_cart( $product_id );
+		
 		if ( ! empty( $already_in_cart ) )
 		{
 			// there was already a quantity of this item in cart prior to this addition
@@ -480,7 +636,7 @@ class jckFundraisers {
 				$product = get_product( $product_id );
 				$product_title = $product->post->post_title;
 				
-				wc_add_notice( sprintf( __( "Sorry, you can only donate once for \"%s\".", $this->slug ), $product_title ), 'error' );
+				wc_add_notice( __( "Sorry, you can only donate once.", $this->slug ), 'error' );
 	
 				$passed = false;
 			} else {
@@ -606,21 +762,23 @@ class jckFundraisers {
 	{
     	global $product;
     	
-    	$fundData = $product->get_fund_data();
-    	$goalData = $fundData['goal'];
+    	if($product->product_type == "fundraiser"):
     	
+        	$fundData = $product->get_fund_data();
+        	$goalData = $fundData['goal'];    	
+        	
+        	$donations = $product->get_total_donations_html();
+        	$raised = $product->get_total_raised_html();
+        	$daysRemaining = ($goalData['type'] == 'target_date' || $goalData['type'] == 'target_goal_date') ? $product->get_days_remaining_html() : '';
+        	
+        	echo sprintf(
+            	'<div class="'.$this->slug.'-stats">%s %s %s</div>',
+            	$donations,
+            	$raised,
+            	$daysRemaining
+        	);
     	
-    	
-    	$donations = $product->get_total_donations_html();
-    	$raised = $product->get_total_raised_html();
-    	$daysRemaining = ($goalData['type'] == 'target_date' || $goalData['type'] == 'target_goal_date') ? $product->get_days_remaining_html() : '';
-    	
-    	echo sprintf(
-        	'<div class="'.$this->slug.'-stats">%s %s %s</div>',
-        	$donations,
-        	$raised,
-        	$daysRemaining
-    	);
+    	endif;
 	}
 	
 /**	=============================

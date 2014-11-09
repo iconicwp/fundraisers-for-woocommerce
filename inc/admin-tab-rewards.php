@@ -16,9 +16,7 @@
     woocommerce_wp_select( 
         array( 
             'id' => $this->slug.'[rewards][type]', 
-            'label' => __( 'Rewards Type', 'woocommerce' ), 
-            'desc_tip' => 'true',
-            'description' => __( 'D', 'woocommerce' ), 
+            'label' => __( 'Rewards Type', 'woocommerce' ),
             'value' => $rewardType,
             'options' => array(
         		'no_rewards'    => __( 'No Rewards', 'woocommerce' ),
@@ -32,7 +30,7 @@
         
         .<?= $this->slug; ?>-rewards-table {
             max-width: 100%;
-            margin: 20px 12px;
+            margin: 20px 12px !important;
             width: auto;
         }
             
@@ -117,7 +115,7 @@
                 
                     <tr class="<?= ($i % 2 == 0 ? 'alternate' : ''); ?>">
                         <td class="column-<?= $this->slug; ?>-unique">
-                            <input type="text" class="<?= $this->slug; ?>-text-input <?= $this->slug; ?>-text-input--full" name="<?= $this->slug; ?>[rewards][rewards][<?= $i; ?>][unique]" value="<?= $reward['unique']; ?>">
+                            <input type="text" class="<?= $this->slug; ?>-text-input <?= $this->slug; ?>-text-input--full" name="<?= $this->slug; ?>[rewards][rewards][<?= $i; ?>][unique]" value="<? if(isset($reward['unique'])) echo $reward['unique']; ?>">
                         </td>
                         <td class="column-<?= $this->slug; ?>-amount">
                             <input type="number" class="<?= $this->slug; ?>-text-input <?= $this->slug; ?>-text-input--full" name="<?= $this->slug; ?>[rewards][rewards][<?= $i; ?>][amount]" value="<?= $reward['amount']; ?>">
@@ -126,7 +124,7 @@
                             <textarea class="<?= $this->slug; ?>-textarea" name="<?= $this->slug; ?>[rewards][rewards][<?= $i; ?>][description]"><?= $reward['description']; ?></textarea>
                         </td>
                         <td class="column-<?= $this->slug; ?>-limit">
-                            <input type="text" class="<?= $this->slug; ?>-text-input <?= $this->slug; ?>-text-input--full" name="<?= $this->slug; ?>[rewards][rewards][<?= $i; ?>][limit]" value="<?= $reward['limit']; ?>">
+                            <input type="number" class="<?= $this->slug; ?>-text-input <?= $this->slug; ?>-text-input--full" name="<?= $this->slug; ?>[rewards][rewards][<?= $i; ?>][limit]" value="<?= $reward['limit']; ?>">
                         </td>
                         <td class="column-<?= $this->slug; ?>-delivery">
                             <input type="text" class="<?= $this->slug; ?>-text-input <?= $this->slug; ?>-text-input--full" name="<?= $this->slug; ?>[rewards][rewards][<?= $i; ?>][delivery]" placeholder="YYYY-MM-DD" value="<?= $reward['delivery']; ?>">
@@ -142,10 +140,4 @@
         </tbody>
     </table>
     
-    <?
-    echo 'Need page to show donations, and allow filtering by reward, if applicable<br>';
-    echo 'Page will list: Name/Amount/Fundraiser/applicable Reward/Date<br><br>';
-    echo 'Shortcodes/widgets for: display donators and message/Fundraiser progress<br>';
-    echo 'Paypal option, authorise upon close of fundraiser.';
-    ?>
 </div>
