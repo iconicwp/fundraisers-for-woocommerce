@@ -3,7 +3,7 @@
 Plugin Name: WooCommerce Fundraisers
 Plugin URI: http://www.jckemp.com
 Description: Fundraiser plugin for WooCommerce
-Version: 1.0.0
+Version: 1.0.1
 Author: James Kemp
 Author Email: support@jckemp.com
 */
@@ -35,8 +35,8 @@ class jckFundraisers {
         $this->cart_data_key = '_'.$this->slug.'_data';
 
 		// Hook up to the init and plugins_loaded actions
-		add_action( 'plugins_loaded',   array( &$this, 'plugins_loaded' ) );
-		add_action( 'init',             array( &$this, 'initiate' ) );
+		add_action( 'plugins_loaded',   array( &$this, 'plugins_loaded' ) );		
+		$this->initiate();
 	}
 
 /**	=============================
@@ -49,13 +49,12 @@ class jckFundraisers {
     {
         load_plugin_textdomain( $this->slug, false, dirname( plugin_basename( __FILE__ ) ) . '/langs/' );
         
-        require_once($this->plugin_path.'/inc/class-wc-product-fundraiser.php');
+        require_once($this->plugin_path.'/inc/class-wc-product-fundraiser.php');  
         
         // Filters for cart actions
-        // these need to run before init
+        // needs to run earlier than plugin init
         add_filter('woocommerce_get_cart_item_from_session',    array(&$this, 'get_cart_item_from_session'), 10, 3);
-        add_action('woocommerce_add_order_item_meta',           array(&$this, 'add_order_item_meta'), 10, 2);
-        
+        add_action('woocommerce_add_order_item_meta',           array(&$this, 'add_order_item_meta'), 10, 2);      
     }
 
 /**	=============================

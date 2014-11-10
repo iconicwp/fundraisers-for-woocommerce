@@ -89,6 +89,10 @@ Fundraisers will work with any well developed WooCommerce theme. If you have any
 
 =====Changelog=====
 
+v1.0.1 (10/11/14)
+
+[fix] Changed init method so it runs correctly on all themes/servers
+
 v1.0.0
 
 Initial Release
