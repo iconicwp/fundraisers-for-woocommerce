@@ -3,7 +3,7 @@
 Plugin Name: WooCommerce Fundraisers
 Plugin URI: http://www.jckemp.com
 Description: Fundraiser plugin for WooCommerce
-Version: 1.0.1
+Version: 1.0.2
 Author: James Kemp
 Author Email: support@jckemp.com
 */
@@ -16,7 +16,7 @@ class jckFundraisers {
     public $name = 'WooCommerce Fundraisers';
     public $shortname = 'Fundraisers';
     public $slug = 'jckf';
-    public $version = "1.0.0";
+    public $version = "1.0.2";
     public $plugin_path;
     public $plugin_url;
     public $cart_data_key;
@@ -35,7 +35,7 @@ class jckFundraisers {
         $this->cart_data_key = '_'.$this->slug.'_data';
 
 		// Hook up to the init and plugins_loaded actions
-		add_action( 'plugins_loaded',   array( &$this, 'plugins_loaded' ) );		
+		add_action( 'plugins_loaded',   array( $this, 'plugins_loaded' ) );		
 		$this->initiate();
 	}
 
@@ -53,8 +53,8 @@ class jckFundraisers {
         
         // Filters for cart actions
         // needs to run earlier than plugin init
-        add_filter('woocommerce_get_cart_item_from_session',    array(&$this, 'get_cart_item_from_session'), 10, 3);
-        add_action('woocommerce_add_order_item_meta',           array(&$this, 'add_order_item_meta'), 10, 2);      
+        add_filter('woocommerce_get_cart_item_from_session',    array( $this, 'get_cart_item_from_session' ), 10, 3);
+        add_action('woocommerce_add_order_item_meta',           array( $this, 'add_order_item_meta' ), 10, 2);      
     }
 
 /**	=============================
@@ -66,39 +66,39 @@ class jckFundraisers {
 	public function initiate()
 	{	
 	    
-	    add_action( 'woocommerce_before_calculate_totals',              array($this,  'add_custom_price' ) );
+	    add_action( 'woocommerce_before_calculate_totals',              array( $this,  'add_custom_price' ) );
 	    
 	    // Run on admin
         if(is_admin())
         {
-            add_filter( 'product_type_selector',                        array( &$this, 'add_product_type') );
-            add_filter( 'woocommerce_product_data_tabs',                array( &$this, 'edit_admin_product_tabs') );
-            add_action( 'woocommerce_product_write_panels',             array( &$this, 'admin_product_tab_content' ) );
-            add_action( 'woocommerce_process_product_meta_fundraiser',  array( &$this, 'process_product_tabs' ), 10, 2 );
-            add_action( 'admin_enqueue_scripts',                        array( &$this, 'product_edit_page_scripts' ), 10, 1 );
-            add_action( 'admin_menu',                                   array( &$this, 'add_admin_pages' ) ); 
+            add_filter( 'product_type_selector',                        array( $this, 'add_product_type' ) );
+            add_filter( 'woocommerce_product_data_tabs',                array( $this, 'edit_admin_product_tabs' ) );
+            add_action( 'woocommerce_product_write_panels',             array( $this, 'admin_product_tab_content' ) );
+            add_action( 'woocommerce_process_product_meta_fundraiser',  array( $this, 'process_product_tabs' ), 10, 2 );
+            add_action( 'admin_enqueue_scripts',                        array( $this, 'product_edit_page_scripts' ), 10, 1 );
+            add_action( 'admin_menu',                                   array( $this, 'add_admin_pages' ) ); 
             
             // Filters for cart actions
             // This is loaded via ajax usually, so needs to be run in admin
-            add_filter( 'woocommerce_cart_item_price',                  array(&$this, 'cart_item_price'), 10, 3 );
+            add_filter( 'woocommerce_cart_item_price',                  array( $this, 'cart_item_price'), 10, 3 );
         }
         
         // Run on frontend
         else
         {
-            add_filter( 'woocommerce_locate_template',                  array( &$this, 'template_override'), 10, 3 );
-            add_action( 'woocommerce_fundraiser_add_to_cart',           array( &$this, 'woocommerce_fundraiser_add_to_cart'), 30 );            
-            add_action( 'woocommerce_add_to_cart',                      array( &$this, 'add_to_cart_hook') );
-            add_filter( 'woocommerce_product_tabs',                     array( &$this, 'edit_product_tabs'), 98 );
-            add_action( 'wp_enqueue_scripts',                           array( &$this, 'scripts') );
-            add_action( 'wp_enqueue_scripts',                           array( &$this, 'styles') );
+            add_filter( 'woocommerce_locate_template',                  array( $this, 'template_override' ), 10, 3 );
+            add_action( 'woocommerce_fundraiser_add_to_cart',           array( $this, 'woocommerce_fundraiser_add_to_cart' ), 30 );            
+            add_action( 'woocommerce_add_to_cart',                      array( $this, 'add_to_cart_hook' ) );
+            add_filter( 'woocommerce_product_tabs',                     array( $this, 'edit_product_tabs' ), 98 );
+            add_action( 'wp_enqueue_scripts',                           array( $this, 'scripts' ) );
+            add_action( 'wp_enqueue_scripts',                           array( $this, 'styles' ) );
             
-            add_action( 'woocommerce_single_product_summary',           array( &$this, 'fundraiser_statistics_summary' ), 15 );
+            add_action( 'woocommerce_single_product_summary',           array( $this, 'fundraiser_statistics_summary' ), 15 );
             
             // Filters for cart actions
-            add_filter( 'woocommerce_add_cart_item_data',               array(&$this, 'add_cart_item_data'), 10, 2);
-            add_filter( 'woocommerce_get_item_data',                    array(&$this, 'get_item_data'), 10, 2);    
-            add_action( 'woocommerce_add_to_cart_validation',           array(&$this, 'validate_donation'), 1, 3 );
+            add_filter( 'woocommerce_add_cart_item_data',               array( $this, 'add_cart_item_data' ), 10, 2);
+            add_filter( 'woocommerce_get_item_data',                    array( $this, 'get_item_data' ), 10, 2);    
+            add_action( 'woocommerce_add_to_cart_validation',           array( $this, 'validate_donation' ), 1, 3 );
         }
         
 	}
@@ -114,7 +114,7 @@ class jckFundraisers {
 	
 	public function add_admin_pages()
 	{
-    	add_submenu_page( 'woocommerce', __('Donations', $this->slug), __('Donations', $this->slug), 'manage_woocommerce', $this->slug.'-donations', array( &$this, 'donations_list' ) );
+    	add_submenu_page( 'woocommerce', __('Donations', $this->slug), __('Donations', $this->slug), 'manage_woocommerce', $this->slug.'-donations', array( $this, 'donations_list' ) );
 	}
 
 /**	=============================
@@ -408,7 +408,7 @@ class jckFundraisers {
                 $tabs[$this->slug.'-rewards'] = array(
                     'title' 	=> __( 'Rewards', 'woocommerce' ),
                     'priority' 	=> 50,
-                    'callback' 	=> array( &$this, 'rewards_product_tab_content' )
+                    'callback' 	=> array( $this, 'rewards_product_tab_content' )
                 );
             
             endif;

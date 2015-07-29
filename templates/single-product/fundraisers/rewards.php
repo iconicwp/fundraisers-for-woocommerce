@@ -27,7 +27,7 @@ $slug = $jckFundraisers->slug;
             ?>
             
             <li class="jckf-reward">
-                <a class="<?= $slug; ?>-reward__link <?= $slug; ?>-reward__link--donate <? if($remaining == 0) echo $slug.'-reward-unavailable'; ?>" href="#<?= $slug; ?>-add-to-cart-form" data-amount="<?= $reward['amount']+5; ?>" data-reward-id="<?= $reward['unique']; ?>">
+                <a class="<?= $slug; ?>-reward__link <?= $slug; ?>-reward__link--donate <? if($remaining == 0) echo $slug.'-reward-unavailable'; ?>" href="#<?= $slug; ?>-add-to-cart-form" data-amount="<?= $reward['amount']; ?>" data-reward-id="<?= $reward['unique']; ?>">
                     <span class="<?= $slug; ?>-reward__select"><span class="<?= $slug; ?>-reward__select-text">Select this Reward</span></span>
                     
                     <? if(isset($reward['limit']) && $reward['limit'] != "") { ?>
