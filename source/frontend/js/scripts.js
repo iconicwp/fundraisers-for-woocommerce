@@ -40,12 +40,9 @@
                 uniqueId = $(this).attr('data-reward-id'),
                 $selected = $('.jckf-reward__link.selected');
             
-            // Update donation field if value is more than currently entered
+            // Update donation field
             
-            if(amount >= currAmount)
-            {
-                $donationField.val(amount);
-            }
+            $donationField.val(amount);
             
             // Update reward ID field
             

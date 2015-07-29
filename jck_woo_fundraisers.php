@@ -239,7 +239,7 @@ class jckFundraisers {
    	public function edit_admin_product_tabs( $tabs )
    	{
        	$tabs['shipping']['class'][] = 'hide_if_fundraiser';
-       	$tabs['attribute']['class'][] = 'hide_if_fundraiser';
+       	$tabs['attribute']['class'][] = 'show_if_fundraiser';
        	
        	$tabs['goal'] = array(
             'label'  => __( 'Goal', $this->slug ),

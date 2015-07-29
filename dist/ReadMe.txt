@@ -91,7 +91,9 @@ Fundraisers will work with any well developed WooCommerce theme. If you have any
 
 v1.0.2 (29/07/15)
 
-[fix] Remove *5 buffer
+[update] Remove *5 buffer
+[update] Always update donation field
+[update] Enable atts
 
 v1.0.1 (10/11/14)
 
