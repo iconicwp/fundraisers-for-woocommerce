@@ -3,7 +3,7 @@
 Plugin Name: WooCommerce Fundraisers
 Plugin URI: http://www.jckemp.com
 Description: Fundraiser plugin for WooCommerce
-Version: 1.0.2
+Version: 1.0.3
 Author: James Kemp
 Author Email: support@jckemp.com
 */
@@ -582,69 +582,75 @@ class jckFundraisers {
     {
         global $woocommerce;
         
-        // validate donation amount
-        if( isset($_POST['price']) && $_POST['price'] <= 0 )
-        {
-            wc_add_notice( __( "Please enter a valid donation amount.", $this->slug ), 'error' );            
-            return false;
-        }
+        $product = get_product( $product_id );
         
-        // check if donation amount allows for selected reward
-        if( isset($_POST['price']) && ( isset($_POST['reward']) && $_POST['reward'] != "" ) )
-        {
-            $product = get_product( $product_id );            
-            $theReward = $product->get_reward($_POST['reward']);
-            
-            if($theReward)
+        if( $product->product_type == "fundraiser" ) {
+        
+            // validate donation amount
+            if( isset($_POST['price']) && $_POST['price'] <= 0 )
             {
-                
-                if($_POST['price'] < $theReward['amount'])
-                {
-                    wc_add_notice( 
-                        sprintf( 
-                            __( "Your selected reward requires a donation of at least %s.", $this->slug ),
-                            wc_price($theReward['amount'])
-                        ), 
-                        'error' 
-                    );            
-                    return false;
-                }
-            
-            }
-            else
-            {
-                
-                wc_add_notice( __( "Please choose a valid reward.", $this->slug ), 'error' );            
+                wc_add_notice( __( "Please enter a valid donation amount.", $this->slug ), 'error' );            
                 return false;
-            
             }
-        }
-        
-        // check that there is only 1 of this item in the cart
-		$woocommerce_max_qty = 1;
-		$already_in_cart = $this->get_qty_alread_in_cart( $product_id );
+            
+            // check if donation amount allows for selected reward
+            if( isset($_POST['price']) && ( isset($_POST['reward']) && $_POST['reward'] != "" ) )
+            {
+                $product = get_product( $product_id );            
+                $theReward = $product->get_reward($_POST['reward']);
+                
+                if($theReward)
+                {
+                    
+                    if($_POST['price'] < $theReward['amount'])
+                    {
+                        wc_add_notice( 
+                            sprintf( 
+                                __( "Your selected reward requires a donation of at least %s.", $this->slug ),
+                                wc_price($theReward['amount'])
+                            ), 
+                            'error' 
+                        );            
+                        return false;
+                    }
+                
+                }
+                else
+                {
+                    
+                    wc_add_notice( __( "Please choose a valid reward.", $this->slug ), 'error' );            
+                    return false;
+                
+                }
+            }
+            
+            // check that there is only 1 of this item in the cart
+    		$woocommerce_max_qty = 1;
+    		$already_in_cart = $this->get_qty_alread_in_cart( $product_id );
+    		
+    		if ( ! empty( $already_in_cart ) )
+    		{
+    			// there was already a quantity of this item in cart prior to this addition
+    			// Check if the total of $already_in_cart + current addition quantity is more than our max
+    			$new_qty = $already_in_cart + $quantity;
+    			if ( $new_qty > $woocommerce_max_qty )
+    			{
+    				// oops. too much.
+    				$product = get_product( $product_id );
+    				$product_title = $product->post->post_title;
+    				
+    				wc_add_notice( __( "Sorry, you can only donate once.", $this->slug ), 'error' );
+    	
+    				$passed = false;
+    			} else {
+    				// addition qty is okay
+    				$passed = true;
+    			}
+    		} else {
+    			// none were in cart previously, and we already have input limits in place, so no more checks are needed
+    			$passed = true;
+    		}
 		
-		if ( ! empty( $already_in_cart ) )
-		{
-			// there was already a quantity of this item in cart prior to this addition
-			// Check if the total of $already_in_cart + current addition quantity is more than our max
-			$new_qty = $already_in_cart + $quantity;
-			if ( $new_qty > $woocommerce_max_qty )
-			{
-				// oops. too much.
-				$product = get_product( $product_id );
-				$product_title = $product->post->post_title;
-				
-				wc_add_notice( __( "Sorry, you can only donate once.", $this->slug ), 'error' );
-	
-				$passed = false;
-			} else {
-				// addition qty is okay
-				$passed = true;
-			}
-		} else {
-			// none were in cart previously, and we already have input limits in place, so no more checks are needed
-			$passed = true;
 		}
 		
 		return $passed;

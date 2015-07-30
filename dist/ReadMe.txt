@@ -89,6 +89,10 @@ Fundraisers will work with any well developed WooCommerce theme. If you have any
 
 =====Changelog=====
 
+v1.0.3 (30/07/15)
+
+[fix] Donate once for fundraisers only, not all products
+
 v1.0.2 (29/07/15)
 
 [update] Remove *5 buffer
