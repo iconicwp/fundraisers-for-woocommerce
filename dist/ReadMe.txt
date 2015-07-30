@@ -92,6 +92,7 @@ Fundraisers will work with any well developed WooCommerce theme. If you have any
 v1.0.3 (30/07/15)
 
 [fix] Donate once for fundraisers only, not all products
+[fix] Remove shorttags
 
 v1.0.2 (29/07/15)
 

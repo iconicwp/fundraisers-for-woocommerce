@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 <div class="wrap">
     
-    <?
+    <?php
     $post = get_post($_GET['fundraiser']);    
     $product = get_product($post->ID);
     
@@ -18,24 +18,24 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
         ?>
         
             <h2 style="margin-bottom: 20px;">
-                <?= sprintf('%s "%s"', __('All Donations for',$this->slug), $post->post_title); ?>
-                <a href="<?= admin_url('admin.php?page=jckf-donations'); ?>" class="add-new-h2"><? _e('Back to All Fundraisers', $this->slug); ?></a>
+                <?php echo sprintf('%s "%s"', __('All Donations for',$this->slug), $post->post_title); ?>
+                <a href="<?php echo admin_url('admin.php?page=jckf-donations'); ?>" class="add-new-h2"><?php _e('Back to All Fundraisers', $this->slug); ?></a>
             </h2>
             
-            <table class="<?= $this->slug; ?>-donations-table wp-list-table widefat fixed" cellspacing="0">
+            <table class="<?php echo $this->slug; ?>-donations-table wp-list-table widefat fixed" cellspacing="0">
             
                 <thead>
                     <tr>
-                        <th class="manage-column column-<?= $this->slug; ?>-orderid" scope="col"><? _e('Order',$this->slug); ?></th>
-                        <th class="manage-column column-<?= $this->slug; ?>-donation" scope="col"><? _e('Donation',$this->slug); ?></th>
-                        <th class="manage-column column-<?= $this->slug; ?>-reward" scope="col"><? _e('Reward',$this->slug); ?></th>
-                        <th class="manage-column column-<?= $this->slug; ?>-status" scope="col"><? _e('Status',$this->slug); ?></th>
+                        <th class="manage-column column-<?php echo $this->slug; ?>-orderid" scope="col"><?php _e('Order',$this->slug); ?></th>
+                        <th class="manage-column column-<?php echo $this->slug; ?>-donation" scope="col"><?php _e('Donation',$this->slug); ?></th>
+                        <th class="manage-column column-<?php echo $this->slug; ?>-reward" scope="col"><?php _e('Reward',$this->slug); ?></th>
+                        <th class="manage-column column-<?php echo $this->slug; ?>-status" scope="col"><?php _e('Status',$this->slug); ?></th>
                     </tr>
                 </thead>
                 
                 <tbody>
                 
-                    <?        
+                    <?php        
                     // loop the donations and add them to a rewards array,
                     // then use this data for sorting the array by reward id
                     $rewards = array();
@@ -49,18 +49,18 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
                     foreach($donations as $donation):
                     ?>
                         
-                        <?
+                        <?php
                         $status = str_replace('wc-', '', $donation['_order_status']);
                         ?>
                         
                         <tr>
-                	        <td><a href="<?= admin_url('post.php?post='.$donation['_order_id'].'&action=edit'); ?>" target="_blank">#<?= $donation['_order_id']; ?></a></td>
-                	        <td><?= wc_price($donation['_line_total']); ?></td>
-                	        <td><?= (isset($donation['Reward ID'])) ? $donation['Reward ID'] : ""; ?></td>
-                	        <td><?= ucwords($status); ?></td>
+                	        <td><a href="<?php echo admin_url('post.php?post='.$donation['_order_id'].'&action=edit'); ?>" target="_blank">#<?php echo $donation['_order_id']; ?></a></td>
+                	        <td><?php echo wc_price($donation['_line_total']); ?></td>
+                	        <td><?php echo (isset($donation['Reward ID'])) ? $donation['Reward ID'] : ""; ?></td>
+                	        <td><?php echo ucwords($status); ?></td>
                 	    </tr>
                     
-                    <?
+                    <?php
                     endforeach;
                     ?>
                 
@@ -68,16 +68,16 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
             
             </table>
         
-        <?
+        <?php
         else:
         ?>
         
         <h2 style="margin-bottom: 20px;">
-            <?= sprintf('%s "%s"', __('There are currently no donations for',$this->slug), $post->post_title); ?>
-            <a href="<?= admin_url('admin.php?page=jckf-donations'); ?>" class="add-new-h2"><? _e('Back to All Fundraisers', $this->slug); ?></a>
+            <?php echo sprintf('%s "%s"', __('There are currently no donations for',$this->slug), $post->post_title); ?>
+            <a href="<?php echo admin_url('admin.php?page=jckf-donations'); ?>" class="add-new-h2"><?php _e('Back to All Fundraisers', $this->slug); ?></a>
         </h2>
                     
-        <?
+        <?php
         endif;
         
     endif;

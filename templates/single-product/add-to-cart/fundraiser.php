@@ -30,9 +30,9 @@ if ( ! $product->is_purchasable() ) return;
 
 <?php if ( $product->is_in_stock() ) : ?>
     
-    <a href="#<?= $slug; ?>-add-to-cart-form" class="single_add_to_cart_button button alt <?= $slug; ?>-donate-btn <?= $slug; ?>-donate-btn--primary"><?php echo $product->single_add_to_cart_text(); ?></a>
+    <a href="#<?php echo $slug; ?>-add-to-cart-form" class="single_add_to_cart_button button alt <?php echo $slug; ?>-donate-btn <?php echo $slug; ?>-donate-btn--primary"><?php echo $product->single_add_to_cart_text(); ?></a>
     
-    <div id="<?= $slug; ?>-add-to-cart-form" class="<?= $slug; ?>-add-to-cart-form mfp-hide">
+    <div id="<?php echo $slug; ?>-add-to-cart-form" class="<?php echo $slug; ?>-add-to-cart-form mfp-hide">
 
     	<?php do_action( 'woocommerce_before_add_to_cart_form' ); ?>
     
@@ -40,18 +40,18 @@ if ( ! $product->is_purchasable() ) return;
     	 	<?php do_action( 'woocommerce_before_add_to_cart_button' ); ?>
     
     	 	<input type="hidden" name="add-to-cart" value="<?php echo esc_attr( $product->id ); ?>" />
-    	 	<? if($rewardType == "rewards") { ?><input type="hidden" class="<?= $slug; ?>-reward-feild" name="reward" value="" /><? } ?>
+    	 	<?php if($rewardType == "rewards") { ?><input type="hidden" class="<?php echo $slug; ?>-reward-feild" name="reward" value="" /><?php } ?>
     	 	
     	 	<h2>Enter your donation amount</h2>
     	 	
-    	 	<div class="<?= $slug; ?>-donation-field-wrap">
-                <span class="<?= $slug; ?>-symbol"><?= get_woocommerce_currency_symbol(); ?></span>
-        	 	<input name='price' class='name_price <?= $slug; ?>-donation-field <?= $slug; ?>-donation-field--currency-<?= $currency_pos; ?>' type='text' />
+    	 	<div class="<?php echo $slug; ?>-donation-field-wrap">
+                <span class="<?php echo $slug; ?>-symbol"><?php echo get_woocommerce_currency_symbol(); ?></span>
+        	 	<input name='price' class='name_price <?php echo $slug; ?>-donation-field <?php echo $slug; ?>-donation-field--currency-<?php echo $currency_pos; ?>' type='text' />
     	 	</div>
     	 	
-    	 	<? wc_get_template( 'single-product/fundraisers/rewards.php' ); ?>
+    	 	<?php wc_get_template( 'single-product/fundraisers/rewards.php' ); ?>
     
-    	 	<button type="submit" class="single_add_to_cart_button button alt <?= $slug; ?>-donate-btn  <?= $slug; ?>-donate-btn--right"><?php echo $product->single_add_to_cart_text(); ?></button>
+    	 	<button type="submit" class="single_add_to_cart_button button alt <?php echo $slug; ?>-donate-btn  <?php echo $slug; ?>-donate-btn--right"><?php echo $product->single_add_to_cart_text(); ?></button>
     
     		<?php do_action( 'woocommerce_after_add_to_cart_button' ); ?>
     	</form>

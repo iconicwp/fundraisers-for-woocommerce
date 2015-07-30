@@ -1,5 +1,5 @@
 <div id="fundraiser_goal_product_data" class="panel woocommerce_options_panel">    
-    <? 
+    <?php 
     $goalData = (isset($fundData['goal'])) ? $fundData['goal'] : false;
     
     // Goal Type
