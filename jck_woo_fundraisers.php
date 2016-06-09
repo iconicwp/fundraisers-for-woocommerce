@@ -3,7 +3,7 @@
 Plugin Name: WooCommerce Fundraisers
 Plugin URI: http://www.jckemp.com
 Description: Fundraiser plugin for WooCommerce
-Version: 1.0.3
+Version: 1.0.4
 Author: James Kemp
 Author Email: support@jckemp.com
 */
@@ -12,30 +12,30 @@ if ( !in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', 
     return false;
 
 class jckFundraisers {
-   	
+
     public $name = 'WooCommerce Fundraisers';
     public $shortname = 'Fundraisers';
     public $slug = 'jckf';
-    public $version = "1.0.2";
+    public $version = "1.0.4";
     public $plugin_path;
     public $plugin_url;
     public $cart_data_key;
-	
+
 /**	=============================
     *
     * Construct the plugin
     *
     ============================= */
-   	
+
 	public function __construct()
 	{
-		
+
 		$this->plugin_path = plugin_dir_path( __FILE__ );
         $this->plugin_url = plugin_dir_url( __FILE__ );
         $this->cart_data_key = '_'.$this->slug.'_data';
 
 		// Hook up to the init and plugins_loaded actions
-		add_action( 'plugins_loaded',   array( $this, 'plugins_loaded' ) );		
+		add_action( 'plugins_loaded',   array( $this, 'plugins_loaded' ) );
 		$this->initiate();
 	}
 
@@ -44,17 +44,17 @@ class jckFundraisers {
     * Run quite near the start (http://codex.wordpress.org/Plugin_API/Action_Reference)
     *
     ============================= */
-    
+
     public function plugins_loaded()
     {
         load_plugin_textdomain( $this->slug, false, dirname( plugin_basename( __FILE__ ) ) . '/langs/' );
-        
-        require_once($this->plugin_path.'/inc/class-wc-product-fundraiser.php');  
-        
+
+        require_once($this->plugin_path.'/inc/class-wc-product-fundraiser.php');
+
         // Filters for cart actions
         // needs to run earlier than plugin init
         add_filter('woocommerce_get_cart_item_from_session',    array( $this, 'get_cart_item_from_session' ), 10, 3);
-        add_action('woocommerce_add_order_item_meta',           array( $this, 'add_order_item_meta' ), 10, 2);      
+        add_action('woocommerce_add_order_item_meta',           array( $this, 'add_order_item_meta' ), 10, 2);
     }
 
 /**	=============================
@@ -62,12 +62,12 @@ class jckFundraisers {
     * Run after the current user is set (http://codex.wordpress.org/Plugin_API/Action_Reference)
     *
     ============================= */
-   	
+
 	public function initiate()
-	{	
-	    
+	{
+
 	    add_action( 'woocommerce_before_calculate_totals',              array( $this,  'add_custom_price' ) );
-	    
+
 	    // Run on admin
         if(is_admin())
         {
@@ -76,31 +76,31 @@ class jckFundraisers {
             add_action( 'woocommerce_product_write_panels',             array( $this, 'admin_product_tab_content' ) );
             add_action( 'woocommerce_process_product_meta_fundraiser',  array( $this, 'process_product_tabs' ), 10, 2 );
             add_action( 'admin_enqueue_scripts',                        array( $this, 'product_edit_page_scripts' ), 10, 1 );
-            add_action( 'admin_menu',                                   array( $this, 'add_admin_pages' ) ); 
-            
+            add_action( 'admin_menu',                                   array( $this, 'add_admin_pages' ) );
+
             // Filters for cart actions
             // This is loaded via ajax usually, so needs to be run in admin
             add_filter( 'woocommerce_cart_item_price',                  array( $this, 'cart_item_price'), 10, 3 );
         }
-        
+
         // Run on frontend
         else
         {
             add_filter( 'woocommerce_locate_template',                  array( $this, 'template_override' ), 10, 3 );
-            add_action( 'woocommerce_fundraiser_add_to_cart',           array( $this, 'woocommerce_fundraiser_add_to_cart' ), 30 );            
+            add_action( 'woocommerce_fundraiser_add_to_cart',           array( $this, 'woocommerce_fundraiser_add_to_cart' ), 30 );
             add_action( 'woocommerce_add_to_cart',                      array( $this, 'add_to_cart_hook' ) );
             add_filter( 'woocommerce_product_tabs',                     array( $this, 'edit_product_tabs' ), 98 );
             add_action( 'wp_enqueue_scripts',                           array( $this, 'scripts' ) );
             add_action( 'wp_enqueue_scripts',                           array( $this, 'styles' ) );
-            
+
             add_action( 'woocommerce_single_product_summary',           array( $this, 'fundraiser_statistics_summary' ), 15 );
-            
+
             // Filters for cart actions
             add_filter( 'woocommerce_add_cart_item_data',               array( $this, 'add_cart_item_data' ), 10, 2);
-            add_filter( 'woocommerce_get_item_data',                    array( $this, 'get_item_data' ), 10, 2);    
+            add_filter( 'woocommerce_get_item_data',                    array( $this, 'get_item_data' ), 10, 2);
             add_action( 'woocommerce_add_to_cart_validation',           array( $this, 'validate_donation' ), 1, 3 );
         }
-        
+
 	}
 
 /**	=============================
@@ -111,7 +111,7 @@ class jckFundraisers {
     * @access public
     *
     ============================= */
-	
+
 	public function add_admin_pages()
 	{
     	add_submenu_page( 'woocommerce', __('Donations', $this->slug), __('Donations', $this->slug), 'manage_woocommerce', $this->slug.'-donations', array( $this, 'donations_list' ) );
@@ -129,13 +129,13 @@ class jckFundraisers {
     * @access public
     *
     ============================= */
-    
+
     public function donations_list()
     {
         if ( !current_user_can( 'manage_woocommerce' ) )  {
 			wp_die( __( 'You do not have sufficient permissions to access this page.', $this->slug ) );
 		}
-		
+
 		require_once($this->plugin_path.'/inc/admin-page-donations.php');
     }
 
@@ -152,20 +152,20 @@ class jckFundraisers {
     public function product_edit_page_scripts($hook)
     {
         global $post;
-        
+
         // If we're not on the post edit page, and post type is not equal
         // to product, don't enqueue anything
-        
+
         if ( 'post.php' != $hook && ($post && $post->post_type != "product") )
         {
             return;
         }
-        
+
         // Otherwise, enqueue this!
-        
+
         wp_enqueue_script( $this->slug.'_admin_scripts', $this->plugin_url . '/assets/admin/js/jckf-scripts.min.js', array(), $this->version );
     }
-    
+
 /**	=============================
     *
     * Fundraiser Product page scripts
@@ -174,17 +174,17 @@ class jckFundraisers {
     * @access public
     *
     ============================= */
-    
+
     public function scripts()
     {
         global $post;
-        
+
         $product = get_product($post->ID);
-        
+
         if($product && $product->product_type == "fundraiser"):
-        
+
             wp_enqueue_script( $this->slug.'_scripts', $this->plugin_url . '/assets/frontend/js/jckf-scripts.min.js', array(), $this->version, true );
-        
+
         endif;
     }
 
@@ -195,17 +195,17 @@ class jckFundraisers {
     * @access public
     *
     ============================= */
-    
+
     public function styles()
     {
         global $post;
-        
+
         $product = get_product($post->ID);
-        
+
         if($product && $product->product_type == "fundraiser"):
-        
+
             wp_enqueue_style( $this->slug.'_styles', $this->plugin_url . '/assets/frontend/css/jckf-styles.min.css', array(), $this->version );
-        
+
         endif;
     }
 
@@ -217,7 +217,7 @@ class jckFundraisers {
     * @param array $types Current types of products
     *
     ============================= */
-	
+
 	public function add_product_type( $types )
 	{
         $types[ 'fundraiser' ] = __( 'Fundraiser' );
@@ -235,111 +235,110 @@ class jckFundraisers {
     * @return arr
     *
     ============================= */
-   	
+
    	public function edit_admin_product_tabs( $tabs )
    	{
        	$tabs['shipping']['class'][] = 'hide_if_fundraiser';
-       	$tabs['attribute']['class'][] = 'show_if_fundraiser';
-       	
+
        	$tabs['goal'] = array(
             'label'  => __( 'Goal', $this->slug ),
             'target' => 'fundraiser_goal_product_data',
             'class'  => array( 'show_if_fundraiser' )
        	);
-       	
+
        	$tabs['fundraiser_type'] = array(
             'label'  => __( 'Rewards', $this->slug ),
             'target' => 'fundraiser_rewards_product_data',
             'class'  => array( 'show_if_fundraiser' )
        	);
-       	
+
        	return $tabs;
    	}
-   	
+
 /**	=============================
     *
     * Product tab content
     *
     * Display the tab content for the new tabs we added in edit_admin_product_tabs()
     *
-    ============================= */   	
-    
+    ============================= */
+
     public function admin_product_tab_content()
     {
         global $post;
-        
+
         $fundData = get_post_meta($post->ID, $this->slug, true);
-        
-        require_once($this->plugin_path.'/inc/admin-tab-goal.php');        
+
+        require_once($this->plugin_path.'/inc/admin-tab-goal.php');
         require_once($this->plugin_path.'/inc/admin-tab-rewards.php');
     }
-	
+
 /**	=============================
     *
     * Save the new product tab content from product_tab_content()
     *
     ============================= */
-    
+
     public function process_product_tabs( $post_id )
-    {   
+    {
         $goal = (isset($_POST[$this->slug]['goal'])) ? $_POST[$this->slug]['goal'] : false;
         $rewardData = (isset($_POST[$this->slug]['rewards'])) ? $_POST[$this->slug]['rewards'] : false;
-        
+
         // check if goal end date is valid
         if($goal['end'] != "" && !$this->validate_date($goal['end'])):
-            
+
             WC_Admin_Meta_Boxes::add_error( __( 'Please enter a valid goal end date (YYYY-MM-DD).', $this->slug ) );
             return;
-            
+
         endif;
-        
+
         if(is_array($rewardData) && isset($rewardData['rewards']) && $rewardData['type'] != "no_rewards"):
-            
+
             // check if each reward has a unique ID
             $rewardIds = array();
-                
+
             foreach($rewardData['rewards'] as $reward):
-                
+
                 // check if the reward ID is blank
                 // if it is, throw an error
                 if(trim($reward['unique']) == ""):
-                    
+
                     WC_Admin_Meta_Boxes::add_error( __( 'Please enter a unique ID for each reward.', $this->slug ) );
                     return;
-                    
+
                 endif;
-                
+
                 // check if the reward ID is in our array
                 if(!in_array($reward['unique'], $rewardIds)):
-                    
+
                     $rewardIds[] = $reward['unique'];
-                    
-                // if the reward ID is in the array, don't 
+
+                // if the reward ID is in the array, don't
                 // save the data and add an error
                 else:
-                    
+
                     WC_Admin_Meta_Boxes::add_error( __( 'Sorry, each reward ID must be unique.', $this->slug ) );
                     return;
-                    
+
                 endif;
-                
+
                 // check if the date is valid
                 if($reward['delivery'] != "" && !$this->validate_date($reward['delivery'])):
-                    
+
                     WC_Admin_Meta_Boxes::add_error( __( 'Please enter a valid estimated delivery date (YYYY-MM-DD).', $this->slug ) );
                     return;
-                    
-                endif;                    
-                
+
+                endif;
+
             endforeach;
-        
+
         endif;
-        
+
         $fundData = array(
             'goal' => $goal,
             'rewards' => $rewardData
         );
-        
+
         update_post_meta( $post_id, $this->slug, $fundData);
     }
 
@@ -353,21 +352,21 @@ class jckFundraisers {
     * @return bool
     *
     ============================= */
-    
+
     public function validate_date($date)
     {
         $date = explode('-', $date);
-        
+
         $day = (int)$date[2];
         $month = (int)$date[1];
         $year = (int)$date[0];
-        
+
         if(!is_array($date) || count($date) != 3)
             return false;
-            
+
         if(!is_int($day) || !is_int($month) || !is_int($year))
             return false;
-        
+
         return checkdate( $month, $day, $year);
     }
 
@@ -379,7 +378,7 @@ class jckFundraisers {
     * @return void
     *
     ============================= */
-	
+
 	public function woocommerce_fundraiser_add_to_cart()
 	{
 		wc_get_template( 'single-product/add-to-cart/fundraiser.php' );
@@ -390,32 +389,32 @@ class jckFundraisers {
     * Edit tabs for the fundraiser product page
     *
     ============================= */
-    
+
     function edit_product_tabs( $tabs )
     {
         global $product, $post;
-        
+
         if($product->product_type == "fundraiser"):
-            
-            // Remove the reviews tab            
+
+            // Remove the reviews tab
             unset( $tabs['reviews'] );
-            
+
             $rewards = $product->get_rewards();
-            
+
             if($rewards && $product->is_purchasable()):
-            
-                // Adds new tab for rewards                
+
+                // Adds new tab for rewards
                 $tabs[$this->slug.'-rewards'] = array(
                     'title' 	=> __( 'Rewards', 'woocommerce' ),
                     'priority' 	=> 50,
                     'callback' 	=> array( $this, 'rewards_product_tab_content' )
                 );
-            
+
             endif;
-        
+
         endif;
-        
-        return $tabs;    
+
+        return $tabs;
     }
 
 /**	=============================
@@ -423,9 +422,9 @@ class jckFundraisers {
     * Edit tabs for the fundraiser product page
     *
     ============================= */
-    
+
     public function rewards_product_tab_content()
-    {        
+    {
         wc_get_template( 'single-product/fundraisers/rewards.php' );
     }
 
@@ -447,7 +446,7 @@ class jckFundraisers {
     public function add_cart_item_data($cart_item_data, $product_id)
     {
         global $woocommerce;
-        
+
         $product = get_product( $product_id );
 
         if ($product && $product->product_type == "fundraiser")
@@ -471,10 +470,10 @@ class jckFundraisers {
     * @param str $key Item key from the cart
     *
     ============================= */
-    
+
     public function get_cart_item_from_session( $item, $values, $key )
     {
-        
+
         if ( array_key_exists( $this->cart_data_key, $values ) )
             $item[$this->cart_data_key] = $values[$this->cart_data_key];
 
@@ -493,20 +492,20 @@ class jckFundraisers {
     * @param obj $cart_item
     *
     ============================= */
-    
+
     public function get_item_data($other_data, $cart_item)
     {
-        
+
         if (isset($cart_item[$this->cart_data_key]))
         {
             $data = $cart_item[$this->cart_data_key];
 
             // Add custom data to product data
             if($data['reward'] != "") {
-                
+
                 $product = get_product($cart_item['product_id']);
                 $reward = $product->get_reward($data['reward']);
-                
+
                 if($reward)
                     $other_data[] = array('name' => 'Reward', 'value' => $reward['description']);
             }
@@ -532,15 +531,15 @@ class jckFundraisers {
 
     public function add_order_item_meta($item_id, $cart_item)
     {
-        if ( isset($cart_item[$this->cart_data_key]['reward']) && $cart_item[$this->cart_data_key]['reward'] != "" ) 
-        { 
+        if ( isset($cart_item[$this->cart_data_key]['reward']) && $cart_item[$this->cart_data_key]['reward'] != "" )
+        {
             $data = $cart_item[$this->cart_data_key];
-            
+
             $product = get_product($cart_item['product_id']);
             $reward = $product->get_reward($data['reward']);
-                
-            wc_add_order_item_meta( $item_id, __( 'Reward ID', $this->slug), $data['reward'] ); 
-            wc_add_order_item_meta( $item_id, __( 'Reward', $this->slug), $reward['description'] ); 
+
+            wc_add_order_item_meta( $item_id, __( 'Reward ID', $this->slug), $data['reward'] );
+            wc_add_order_item_meta( $item_id, __( 'Reward', $this->slug), $reward['description'] );
         }
     }
 
@@ -555,13 +554,13 @@ class jckFundraisers {
     * @param obj $cart_item_key
     *
     ============================= */
-    
+
     public function cart_item_price($price, $cart_item, $cart_item_key)
-    {    
+    {
         global $woocommerce;
-        
+
         $donate_price = $woocommerce->session->__get($cart_item_key.'_donate_price');
-        
+
         return ($donate_price) ? wc_price($donate_price) : $price;
     }
 
@@ -577,57 +576,57 @@ class jckFundraisers {
     * @return bool
     *
     ============================= */
-    
+
     public function validate_donation( $passed, $product_id, $quantity )
     {
         global $woocommerce;
-        
+
         $product = get_product( $product_id );
-        
+
         if( $product->product_type == "fundraiser" ) {
-        
+
             // validate donation amount
             if( isset($_POST['price']) && $_POST['price'] <= 0 )
             {
-                wc_add_notice( __( "Please enter a valid donation amount.", $this->slug ), 'error' );            
+                wc_add_notice( __( "Please enter a valid donation amount.", $this->slug ), 'error' );
                 return false;
             }
-            
+
             // check if donation amount allows for selected reward
             if( isset($_POST['price']) && ( isset($_POST['reward']) && $_POST['reward'] != "" ) )
             {
-                $product = get_product( $product_id );            
+                $product = get_product( $product_id );
                 $theReward = $product->get_reward($_POST['reward']);
-                
+
                 if($theReward)
                 {
-                    
+
                     if($_POST['price'] < $theReward['amount'])
                     {
-                        wc_add_notice( 
-                            sprintf( 
+                        wc_add_notice(
+                            sprintf(
                                 __( "Your selected reward requires a donation of at least %s.", $this->slug ),
                                 wc_price($theReward['amount'])
-                            ), 
-                            'error' 
-                        );            
+                            ),
+                            'error'
+                        );
                         return false;
                     }
-                
+
                 }
                 else
                 {
-                    
-                    wc_add_notice( __( "Please choose a valid reward.", $this->slug ), 'error' );            
+
+                    wc_add_notice( __( "Please choose a valid reward.", $this->slug ), 'error' );
                     return false;
-                
+
                 }
             }
-            
+
             // check that there is only 1 of this item in the cart
     		$woocommerce_max_qty = 1;
     		$already_in_cart = $this->get_qty_alread_in_cart( $product_id );
-    		
+
     		if ( ! empty( $already_in_cart ) )
     		{
     			// there was already a quantity of this item in cart prior to this addition
@@ -638,9 +637,9 @@ class jckFundraisers {
     				// oops. too much.
     				$product = get_product( $product_id );
     				$product_title = $product->post->post_title;
-    				
+
     				wc_add_notice( __( "Sorry, you can only donate once.", $this->slug ), 'error' );
-    	
+
     				$passed = false;
     			} else {
     				// addition qty is okay
@@ -650,12 +649,12 @@ class jckFundraisers {
     			// none were in cart previously, and we already have input limits in place, so no more checks are needed
     			$passed = true;
     		}
-		
+
 		}
-		
+
 		return $passed;
     }
-    
+
 /**	=============================
     *
     * Use the price entered by the user.
@@ -663,20 +662,20 @@ class jckFundraisers {
     * @access public
     * @return void
     *
-    ============================= */	
-	
+    ============================= */
+
 	public function add_custom_price( $cart_object )
 	{
         global $woocommerce;
-        
+
         foreach ( $cart_object->cart_contents as $key => $value )
         {
-            
+
             if($value['data']->product_type !== 'fundraiser')
             {
               continue;
             }
-            
+
             $donate_price = $woocommerce->session->__get($key.'_donate_price');
             if($donate_price)
             {
@@ -693,27 +692,27 @@ class jckFundraisers {
     * @return void
     *
     ============================= */
-    
+
     public function add_to_cart_hook($key)
     {
         global $woocommerce;
-        
-        foreach ($woocommerce->cart->get_cart() as $cart_item_key => $values) 
+
+        foreach ($woocommerce->cart->get_cart() as $cart_item_key => $values)
         {
-          
+
             if($values['data']->product_type !== "fundraiser")
             {
                 $values['data']->set_price($_POST['price']);
                 continue;
             }
-            
+
             $thousands_sep  = wp_specialchars_decode( stripslashes( get_option( 'woocommerce_price_thousand_sep' ) ), ENT_QUOTES );
             $decimal_sep = stripslashes( get_option( 'woocommerce_price_decimal_sep' ) );
             $_POST['price'] = str_replace($thousands_sep, '', $_POST['price']);
             $_POST['price'] = str_replace($decimal_sep, '.', $_POST['price']);
-            
+
             $_POST['price'] = wc_format_decimal($_POST['price']);
-            
+
             if($cart_item_key == $key)
             {
                 $values['data']->set_price($_POST['price']);
@@ -733,13 +732,13 @@ class jckFundraisers {
     * @param int $the_id ID of the product (variable or simple)
     *
     ============================= */
-    
+
     public function get_qty_alread_in_cart( $the_id )
     {
 		global $woocommerce;
-		
+
 		$qty = 0;
-		
+
 		// search the cart for the product in question
 		foreach($woocommerce->cart->get_cart() as $cart_item_key => $values )
 		{
@@ -749,7 +748,7 @@ class jckFundraisers {
 				$qty = $values['quantity'];
 			}
 		}
-		
+
 		return $qty;
 	}
 
@@ -762,51 +761,51 @@ class jckFundraisers {
     * @return str
     *
     ============================= */
-	
+
 	public function fundraiser_statistics_summary()
 	{
     	global $product;
-    	
+
     	if($product->product_type == "fundraiser"):
-    	
+
         	$fundData = $product->get_fund_data();
-        	$goalData = $fundData['goal'];    	
-        	
+        	$goalData = $fundData['goal'];
+
         	$donations = $product->get_total_donations_html();
         	$raised = $product->get_total_raised_html();
         	$daysRemaining = ($goalData['type'] == 'target_date' || $goalData['type'] == 'target_goal_date') ? $product->get_days_remaining_html() : '';
-        	
+
         	echo sprintf(
             	'<div class="'.$this->slug.'-stats">%s %s %s</div>',
             	$donations,
             	$raised,
             	$daysRemaining
         	);
-    	
+
     	endif;
 	}
-	
+
 /**	=============================
     *
     * Modification: Get the template from this plugin, if it exists
     * Works for any woocommerce template
     *
     ============================= */
-    
+
     public function template_override($template, $template_name, $template_path )
     {
-    
+
         $plugin_path = untrailingslashit( plugin_dir_path( __FILE__ ) ). '/templates/';
-        
+
         if ( file_exists( $plugin_path . $template_name ) )
         {
             $template = $plugin_path . $template_name;
             return $template;
         }
-        
+
         return $template;
     }
-  
+
 }
 
 $jckFundraisers = new jckFundraisers();

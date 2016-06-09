@@ -1,0 +1,25 @@
+# Mac Specific #
+.DS_Store
+
+# Packages #
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Design Files #
+*.psd
+80-banner.*
+590-banner.*
+
+# Folders #
+node_modules/
+.sass-cache
+
+# Uncomment for Production #
+codecanyon/
+tmp/

@@ -89,6 +89,10 @@ Fundraisers will work with any well developed WooCommerce theme. If you have any
 
 =====Changelog=====
 
+v1.0.4 (30/07/15)
+
+[fix] Remove attribute tab class as it interferes with other products. Still shows for fundraiser products
+
 v1.0.3 (30/07/15)
 
 [fix] Donate once for fundraisers only, not all products
