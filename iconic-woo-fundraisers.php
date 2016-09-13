@@ -33,6 +33,8 @@ class jckFundraisers {
         $this->plugin_url = plugin_dir_url( __FILE__ );
         $this->cart_data_key = '_'.$this->slug.'_data';
 
+        require_once( $this->plugin_path.'inc/admin/vendor/class-dashboard.php' );
+
 		// Hook up to the init and plugins_loaded actions
 		add_action( 'plugins_loaded',   array( $this, 'plugins_loaded' ) );
 		$this->initiate();

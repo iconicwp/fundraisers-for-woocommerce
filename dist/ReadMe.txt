@@ -89,27 +89,26 @@ Fundraisers will work with any well developed WooCommerce theme. If you have any
 
 =====Changelog=====
 
-v1.0.4 (30/07/15)
+v1.0.5 (13/09/16)
+[update] Iconic dashboard
+[update] Enqueue Magnific properly
 
+v1.0.4 (30/07/15)
 [fix] Remove attribute tab class as it interferes with other products. Still shows for fundraiser products
 
 v1.0.3 (30/07/15)
-
 [fix] Donate once for fundraisers only, not all products
 [fix] Remove shorttags
 
 v1.0.2 (29/07/15)
-
 [update] Remove *5 buffer
 [update] Always update donation field
 [update] Enable atts
 
 v1.0.1 (10/11/14)
-
 [fix] Changed init method so it runs correctly on all themes/servers
 
 v1.0.0
-
 Initial Release
 
 ----------------------------------------
