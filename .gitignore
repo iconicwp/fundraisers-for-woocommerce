@@ -22,3 +22,4 @@ node_modules/
 codecanyon/
 tmp/
 bower_components/
+/vendor/

@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: WooCommerce Fundraisers
+Plugin Name: Fundraisers for WooCommerce
 Plugin URI: https://iconicwp.com
-Description: Fundraiser plugin for WooCommerce
-Version: 1.0.4
+Description: Raise funds and offer rewards for any event using your WooCommerce store.
+Version: 1.0.5
 Author: James Kemp
 Author Email: support@jckemp.com
 */
@@ -16,7 +16,7 @@ class jckFundraisers {
     public $name = 'WooCommerce Fundraisers';
     public $shortname = 'Fundraisers';
     public $slug = 'jckf';
-    public $version = "1.0.4";
+    public $version = "1.0.5";
     public $plugin_path;
     public $plugin_url;
     public $cart_data_key;
@@ -172,7 +172,11 @@ class jckFundraisers {
 
         if($product && $product->product_type == "fundraiser"):
 
-            wp_enqueue_script( $this->slug.'_scripts', $this->plugin_url . '/assets/frontend/js/jckf-scripts.min.js', array(), $this->version, true );
+            wp_register_script( 'magnific-popup', $this->plugin_url . '/assets/frontend/vendor/jquery.magnific-popup.min.js', array('jquery'), $this->version, true );
+            wp_register_script( 'jckf-scripts', $this->plugin_url . '/assets/frontend/js/main.min.js', array('magnific-popup', 'jquery'), $this->version, true );
+
+            wp_enqueue_script( 'magnific-popup' );
+            wp_enqueue_script( 'jckf-scripts' );
 
         endif;
     }
@@ -192,7 +196,11 @@ class jckFundraisers {
 
         if($product && $product->product_type == "fundraiser"):
 
-            wp_enqueue_style( $this->slug.'_styles', $this->plugin_url . '/assets/frontend/css/main.min.css', array(), $this->version );
+            wp_register_style( 'magnific-popup', $this->plugin_url . '/assets/frontend/vendor/magnific-popup.css', array(), $this->version );
+            wp_register_style( 'jckf-styles', $this->plugin_url . '/assets/frontend/css/main.min.css', array('magnific-popup'), $this->version );
+
+            wp_enqueue_style( 'magnific-popup' );
+            wp_enqueue_style( 'jckf-styles' );
 
         endif;
     }

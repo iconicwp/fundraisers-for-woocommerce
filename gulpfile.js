@@ -33,7 +33,8 @@ var deps = {
     // 'src' : 'dest'
 
     'vendor/jamesckemp/iconic-dashboard/class-dashboard.php' : 'inc/admin/vendor',
-    'bower_components/magnific-popup/dist/jquery.magnific-popup.min.js' : 'assets/frontend/vendor'
+    'bower_components/magnific-popup/dist/jquery.magnific-popup.min.js' : 'assets/frontend/vendor',
+    'bower_components/magnific-popup/dist/magnific-popup.css' : 'assets/frontend/vendor'
 
 };
 
