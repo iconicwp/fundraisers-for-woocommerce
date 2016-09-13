@@ -1,0 +1,77 @@
+.mfp-bg {
+    z-index: 999998;
+}
+
+    .mfp-wrap {
+        z-index: 999999;
+    }
+
+        .jckf-add-to-cart-form {
+            background: #fff;
+            padding: 30px;
+            max-width: 600px;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+
+            .jckf-add-to-cart-form form {
+                margin: 0;
+                padding: 0;
+                border: none;
+                background: none;
+            }
+
+                .jckf-add-to-cart-form h2 {
+                    margin: 0 0 20px;
+                }
+
+                .jckf-donation-field-wrap {
+                    position: relative;
+                    margin: 0 0 20px;
+                }
+
+                    .jckf-symbol {
+                        position: absolute;
+                        top: 50%;
+                        left: 15px;
+                        font-size: 18px;
+                        height: 20px;
+                        line-height: 20px;
+                        margin: -10px 0 0;
+                        font-weight: bold;
+                    }
+
+                    .jckf-donation-field,
+                    input.jckf-donation-field,
+                    input[type="text"].jckf-donation-field {
+                        border: 1px solid #dbdbdc;
+                        margin: 0;
+                        background: #fff;
+                        padding: 15px;
+                        border-radius: 5px;
+                        color: #666;
+                        box-sizing: border-box;
+                        font-size: 18px;
+                        height: 56px;
+                        width: 100%;
+                        display: block;
+                    }
+
+                    .jckf-donation-field--currency-left,
+                    input.jckf-donation-field--currency-left,
+                    input[type="text"].jckf-donation-field--currency-left {
+                        padding-left: 35px;
+                    }
+
+                    .jckf-donation-field--currency-right,
+                    input.jckf-donation-field--currency-right,
+                    input[type="text"].jckf-donation-field--currency-right {
+                        padding-right: 35px;
+                    }
+
+                    .jckf-donate-btn--right {
+                        float: right;
+                        display: inline;
+                        width: auto;
+                        margin: 0;
+                    }

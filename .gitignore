@@ -19,7 +19,6 @@
 # Folders #
 node_modules/
 .sass-cache
-
-# Uncomment for Production #
 codecanyon/
 tmp/
+bower_components/
