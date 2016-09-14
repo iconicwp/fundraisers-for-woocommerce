@@ -76,10 +76,6 @@ class jckFundraisers {
             add_action( 'admin_enqueue_scripts',                        array( $this, 'product_edit_page_scripts' ), 10, 1 );
             add_action( 'admin_menu',                                   array( $this, 'add_admin_pages' ) );
 
-            // Filters for cart actions
-            // This is loaded via ajax usually, so needs to be run in admin
-            add_filter( 'woocommerce_cart_item_price',                  array( $this, 'cart_item_price'), 10, 3 );
-
         } else {
 
             add_filter( 'woocommerce_locate_template',                  array( $this, 'template_override' ), 10, 3 );
@@ -96,6 +92,8 @@ class jckFundraisers {
             add_filter( 'woocommerce_get_item_data',                    array( $this, 'get_item_data' ), 10, 2);
             add_action( 'woocommerce_add_to_cart_validation',           array( $this, 'validate_donation' ), 1, 3 );
         }
+
+        add_filter( 'woocommerce_cart_item_price',                  array( $this, 'cart_item_price'), 10, 3 );
 
 	}
 
@@ -678,10 +676,7 @@ class jckFundraisers {
         foreach ($woocommerce->cart->get_cart() as $cart_item_key => $values) {
 
             if($values['data']->product_type !== "fundraiser")
-            {
-                $values['data']->set_price($_POST['price']);
                 continue;
-            }
 
             $thousands_sep  = wp_specialchars_decode( stripslashes( get_option( 'woocommerce_price_thousand_sep' ) ), ENT_QUOTES );
             $decimal_sep = stripslashes( get_option( 'woocommerce_price_decimal_sep' ) );
@@ -690,8 +685,7 @@ class jckFundraisers {
 
             $_POST['price'] = wc_format_decimal($_POST['price']);
 
-            if($cart_item_key == $key)
-            {
+            if($cart_item_key == $key) {
                 $values['data']->set_price($_POST['price']);
                 $woocommerce->session->__set($key.'_donate_price', $_POST['price']);
             }
