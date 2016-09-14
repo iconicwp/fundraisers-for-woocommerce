@@ -25,7 +25,7 @@ var paths = {
     frontend_styles: ['source/frontend/scss/**/*.scss'],
     admin_scripts: ['source/admin/js/**/*.js'],
     admin_styles: ['source/admin/scss/**/*.scss'],
-    src: ['inc/**/*', 'templates/**/*', 'assets/**/*', 'languages/**/*', plugin_main_file],
+    src: ['inc/**/*', 'templates/**/*', 'assets/**/*', 'languages/**/*', 'readme.txt', plugin_main_file],
     cc_src: ['**/*']
 };
 
