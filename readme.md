@@ -8,7 +8,7 @@ View the [Fundraisers for WooCommerce demo](http://demos.iconicwp.com/fundraiser
 
 ## Download
 
-You can download the installable plugin files [here](https://github.com/).
+You can download the installable plugin files [here](https://github.com/iconicwp/fundraisers-for-woocommerce/raw/master/dist/iconic-woo-fundraisers.zip).
 
 It is not advisable to download the full repo and install as a plugin unless you want to contribute, as there are scripts to compile and render the plugin included.
 
@@ -29,7 +29,7 @@ Assets can be modified from within the `source` folder. Just make sure to run `$
 
 ## Documentation
 
-You can view the docs [here](https://github.com/).
+You can view the docs [here](https://github.com/iconicwp/fundraisers-for-woocommerce/blob/master/dist/readme.md).
 
 ## About Iconic
 
