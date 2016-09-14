@@ -44,6 +44,9 @@ To install the plugin:
 v1.0.5 (13/09/16)
 [update] Iconic dashboard
 [update] Enqueue Magnific properly
+[fix] Disable shipping for fundraiser purchases
+[fix] Issue when calculating donation in ajax cart
+[fix] Modifying non-fundraiser products in cart
 
 v1.0.4 (30/07/15)
 [fix] Remove attribute tab class as it interferes with other products. Still shows for fundraiser products
