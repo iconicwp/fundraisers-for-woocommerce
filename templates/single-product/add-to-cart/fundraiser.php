@@ -9,9 +9,9 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-global $product, $jckFundraisers;
+global $product, $iconic_woo_fundraisers;
 
-$slug = $jckFundraisers->slug;
+$slug = $iconic_woo_fundraisers->slug;
 $fundData = $product->get_fund_data();
 $rewardType = (isset($fundData['rewards']['type'])) ? $fundData['rewards']['type'] : false;
 

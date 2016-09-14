@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
         
             <h2 style="margin-bottom: 20px;">
                 <?php echo sprintf('%s "%s"', __('All Donations for',$this->slug), $post->post_title); ?>
-                <a href="<?php echo admin_url('admin.php?page=jckf-donations'); ?>" class="add-new-h2"><?php _e('Back to All Fundraisers', $this->slug); ?></a>
+                <a href="<?php echo admin_url('admin.php?page=iconic-woo-fundraisers-donations'); ?>" class="add-new-h2"><?php _e('Back to All Fundraisers', $this->slug); ?></a>
             </h2>
             
             <table class="<?php echo $this->slug; ?>-donations-table wp-list-table widefat fixed" cellspacing="0">
@@ -74,7 +74,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
         
         <h2 style="margin-bottom: 20px;">
             <?php echo sprintf('%s "%s"', __('There are currently no donations for',$this->slug), $post->post_title); ?>
-            <a href="<?php echo admin_url('admin.php?page=jckf-donations'); ?>" class="add-new-h2"><?php _e('Back to All Fundraisers', $this->slug); ?></a>
+            <a href="<?php echo admin_url('admin.php?page=iconic-woo-fundraisers-donations'); ?>" class="add-new-h2"><?php _e('Back to All Fundraisers', $this->slug); ?></a>
         </h2>
                     
         <?php

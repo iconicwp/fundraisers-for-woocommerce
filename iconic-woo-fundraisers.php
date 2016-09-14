@@ -5,17 +5,16 @@ Plugin URI: https://iconicwp.com
 Description: Raise funds and offer rewards for any event using your WooCommerce store.
 Version: 1.0.5
 Author: James Kemp
-Author Email: support@jckemp.com
 */
 
 if ( !in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) )
     return false;
 
-class jckFundraisers {
+class Iconic_Woo_Fundraisers {
 
-    public $name = 'WooCommerce Fundraisers';
+    public $name = 'Fundraisers for WooCommerce';
     public $shortname = 'Fundraisers';
-    public $slug = 'jckf';
+    public $slug = 'iconic-woo-fundraisers';
     public $version = "1.0.5";
     public $plugin_path;
     public $plugin_url;
@@ -153,7 +152,8 @@ class jckFundraisers {
 
         // Otherwise, enqueue this!
 
-        wp_enqueue_script( $this->slug.'_admin_scripts', $this->plugin_url . '/assets/admin/js/jckf-scripts.min.js', array(), $this->version );
+        wp_enqueue_script( 'iconic-woo-fundraisers-admin-scripts', $this->plugin_url . '/assets/admin/js/main.min.js', array(), $this->version );
+
     }
 
 /**	=============================
@@ -173,10 +173,10 @@ class jckFundraisers {
         if($product && $product->product_type == "fundraiser"):
 
             wp_register_script( 'magnific-popup', $this->plugin_url . '/assets/frontend/vendor/jquery.magnific-popup.min.js', array('jquery'), $this->version, true );
-            wp_register_script( 'jckf-scripts', $this->plugin_url . '/assets/frontend/js/main.min.js', array('magnific-popup', 'jquery'), $this->version, true );
+            wp_register_script( 'iconic-woo-fundraisers-scripts', $this->plugin_url . '/assets/frontend/js/main.min.js', array('magnific-popup', 'jquery'), $this->version, true );
 
             wp_enqueue_script( 'magnific-popup' );
-            wp_enqueue_script( 'jckf-scripts' );
+            wp_enqueue_script( 'iconic-woo-fundraisers-scripts' );
 
         endif;
     }
@@ -197,10 +197,10 @@ class jckFundraisers {
         if($product && $product->product_type == "fundraiser"):
 
             wp_register_style( 'magnific-popup', $this->plugin_url . '/assets/frontend/vendor/magnific-popup.css', array(), $this->version );
-            wp_register_style( 'jckf-styles', $this->plugin_url . '/assets/frontend/css/main.min.css', array('magnific-popup'), $this->version );
+            wp_register_style( 'iconic-woo-fundraisers-styles', $this->plugin_url . '/assets/frontend/css/main.min.css', array('magnific-popup'), $this->version );
 
             wp_enqueue_style( 'magnific-popup' );
-            wp_enqueue_style( 'jckf-styles' );
+            wp_enqueue_style( 'iconic-woo-fundraisers-styles' );
 
         endif;
     }
@@ -775,4 +775,4 @@ class jckFundraisers {
 
 }
 
-$jckFundraisers = new jckFundraisers();
+$iconic_woo_fundraisers = new Iconic_Woo_Fundraisers();

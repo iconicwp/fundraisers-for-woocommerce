@@ -1,10 +1,10 @@
-.jckf-rewards {
+.iconic-woo-fundraisers-rewards {
     list-style: none none outside;
     margin: 0 0 20px;
     padding: 0;
 }
 
-    .jckf-reward {
+    .iconic-woo-fundraisers-reward {
         list-style: none none outside;
         margin: 0;
         padding: 0;
@@ -12,11 +12,11 @@
         position: relative;
     }
 
-    .jckf-reward:last-child {
+    .iconic-woo-fundraisers-reward:last-child {
         border: none;
     }
 
-        a.jckf-reward__link {
+        a.iconic-woo-fundraisers-reward__link {
             display: block;
             background: #efeff0;
             padding: 15px;
@@ -25,29 +25,29 @@
             text-decoration: none;
         }
 
-        a.jckf-reward__link:hover {
+        a.iconic-woo-fundraisers-reward__link:hover {
             color: #333;
             text-decoration: none;
         }
 
-        .jckf-reward-unavailable {
+        .iconic-woo-fundraisers-reward-unavailable {
             cursor: default;
             opacity: 0.5;
         }
 
-        .jckf-reward__link:hover {
+        .iconic-woo-fundraisers-reward__link:hover {
             text-decoration: none;
         }
 
-            .jckf-reward__link > div {
+            .iconic-woo-fundraisers-reward__link > div {
                 margin-bottom: 10px;
             }
 
-            .jckf-reward__link > div:last-child {
+            .iconic-woo-fundraisers-reward__link > div:last-child {
                 margin-bottom: 0;
             }
 
-            .jckf-reward-flag {
+            .iconic-woo-fundraisers-reward-flag {
                 position: absolute;
                 top: 0;
                 right: 15px;
@@ -57,29 +57,29 @@
                 line-height: 20px;
             }
 
-            .jckf-reward__limit {
+            .iconic-woo-fundraisers-reward__limit {
                 background: #dbdbdc;
                 color: #333;
             }
 
-                .selected .jckf-reward__limit {
+                .selected .iconic-woo-fundraisers-reward__limit {
                     display: none;
                 }
 
-            .jckf-reward__selected {
+            .iconic-woo-fundraisers-reward__selected {
                 background: #53a1b8;
                 color: #fff;
             }
 
-            .jckf-reward__donate {
+            .iconic-woo-fundraisers-reward__donate {
                 font-weight: bold;
             }
 
-            .jckf-reward__delivery {
+            .iconic-woo-fundraisers-reward__delivery {
                 font-size: 90%;
             }
 
-            .jckf-reward__select {
+            .iconic-woo-fundraisers-reward__select {
                 background: #53a1b8;
                 opacity: 0;
                 color: #fff;
@@ -98,11 +98,11 @@
                 -webkit-transition: opacity .2s ease-in-out;
             }
 
-            .jckf-reward__link--hover .jckf-reward__select {
+            .iconic-woo-fundraisers-reward__link--hover .iconic-woo-fundraisers-reward__select {
                 opacity: 0.9;
             }
 
-                .jckf-reward__select-text {
+                .iconic-woo-fundraisers-reward__select-text {
                     position: absolute;
                     top: 50%;
                     white-space: nowrap;
@@ -119,6 +119,6 @@
                     -webkit-transition: font .2s ease-in-out;
                 }
 
-                .jckf-reward__link--hover .jckf-reward__select-text {
+                .iconic-woo-fundraisers-reward__link--hover .iconic-woo-fundraisers-reward__select-text {
                     font-size: 100%;
                 }
