@@ -47,6 +47,7 @@ v1.0.5 (13/09/16)
 [fix] Disable shipping for fundraiser purchases
 [fix] Issue when calculating donation in ajax cart
 [fix] Modifying non-fundraiser products in cart
+[update] Sanitise and validate posted data
 
 v1.0.4 (30/07/15)
 [fix] Remove attribute tab class as it interferes with other products. Still shows for fundraiser products

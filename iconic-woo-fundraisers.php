@@ -106,7 +106,7 @@ class Iconic_Woo_Fundraisers {
     ============================= */
 
 	public function add_admin_pages() {
-    	add_submenu_page( 'woocommerce', __('Donations', $this->slug), __('Donations', $this->slug), 'manage_woocommerce', $this->slug.'-donations', array( $this, 'donations_list' ) );
+    	add_submenu_page( 'woocommerce', __( 'Donations', 'iconic-woo-fundraisers' ), __( 'Donations', 'iconic-woo-fundraisers' ), 'manage_woocommerce', $this->slug.'-donations', array( $this, 'donations_list' ) );
 	}
 
 /**	=============================
@@ -124,7 +124,7 @@ class Iconic_Woo_Fundraisers {
 
     public function donations_list() {
         if ( !current_user_can( 'manage_woocommerce' ) ) {
-			wp_die( __( 'You do not have sufficient permissions to access this page.', $this->slug ) );
+			wp_die( __(  'You do not have sufficient permissions to access this page.', 'iconic-woo-fundraisers' ) );
 		}
 
 		require_once($this->plugin_path.'/inc/admin-page-donations.php');
@@ -235,13 +235,13 @@ class Iconic_Woo_Fundraisers {
        	$tabs['shipping']['class'][] = 'hide_if_fundraiser';
 
        	$tabs['goal'] = array(
-            'label'  => __( 'Goal', $this->slug ),
+            'label'  => __( 'Goal', 'iconic-woo-fundraisers' ),
             'target' => 'fundraiser_goal_product_data',
             'class'  => array( 'show_if_fundraiser' )
        	);
 
        	$tabs['fundraiser_type'] = array(
-            'label'  => __( 'Rewards', $this->slug ),
+            'label'  => __( 'Rewards', 'iconic-woo-fundraisers' ),
             'target' => 'fundraiser_rewards_product_data',
             'class'  => array( 'show_if_fundraiser' )
        	);
@@ -260,7 +260,7 @@ class Iconic_Woo_Fundraisers {
     public function admin_product_tab_content() {
         global $post;
 
-        $fundData = get_post_meta($post->ID, $this->slug, true);
+        $fundData = get_post_meta( $post->ID, $this->slug, true );
 
         require_once($this->plugin_path.'/inc/admin-tab-goal.php');
         require_once($this->plugin_path.'/inc/admin-tab-rewards.php');
@@ -273,65 +273,129 @@ class Iconic_Woo_Fundraisers {
     ============================= */
 
     public function process_product_tabs( $post_id ) {
-        $goal = (isset($_POST[$this->slug]['goal'])) ? $_POST[$this->slug]['goal'] : false;
-        $rewardData = (isset($_POST[$this->slug]['rewards'])) ? $_POST[$this->slug]['rewards'] : false;
 
-        // check if goal end date is valid
-        if($goal['end'] != "" && !$this->validate_date($goal['end'])):
+        $goal = $this->validate_goal();
+        $reward_data = $this->validate_rewards();
 
-            WC_Admin_Meta_Boxes::add_error( __( 'Please enter a valid goal end date (YYYY-MM-DD).', $this->slug ) );
-            return;
+        $fundraiser_data = array(
+            'goal' => $goal,
+            'rewards' => $reward_data
+        );
 
-        endif;
+        error_log( print_r( $fundraiser_data, true ) );
 
-        if(is_array($rewardData) && isset($rewardData['rewards']) && $rewardData['type'] != "no_rewards"):
+        update_post_meta( $post_id, $this->slug, $fundraiser_data );
+
+    }
+
+    /**
+     * Validate Goal Data
+     *
+     * @return mixed
+     */
+    public function validate_goal() {
+
+        $validated_goal_data = array();
+        $goal_data = isset( $_POST['iconic-woo-fundraisers']['goal'] ) ? $_POST['iconic-woo-fundraisers']['goal'] : false;
+
+        if( !$goal_data )
+            return false;
+
+        if( empty( $goal_data ) )
+            return false;
+
+        foreach( $goal_data as $key => $value ) {
+
+            $value = sanitize_text_field( $value );
+
+            if( $key == "amount" )
+                $value = floatval( $value );
+
+            if( $key == "end" ) {
+
+                if( !empty( $value ) && !$this->validate_date( $value ) ) {
+
+                    WC_Admin_Meta_Boxes::add_error( __( 'Please enter a valid goal end date (YYYY-MM-DD).', 'iconic-woo-fundraisers' ) );
+                    $value = "";
+
+                }
+            }
+
+            $validated_goal_data[ $key ] = $value;
+
+        }
+
+        return $validated_goal_data;
+
+    }
+
+    /**
+     * Validate Reward Data
+     *
+     * @return mixed
+     */
+    public function validate_rewards() {
+
+        $validated_reward_data = array();
+        $reward_data = isset( $_POST['iconic-woo-fundraisers']['rewards'] ) ? $_POST['iconic-woo-fundraisers']['rewards'] : false;
+
+        if( !$reward_data )
+            return false;
+
+        if( empty( $reward_data ) )
+            return false;
+
+        $validated_reward_data['type'] = isset( $reward_data['type'] ) ? sanitize_text_field( $reward_data['type'] ) : "no_rewards";
+
+        if( $validated_reward_data['type'] != "no_rewards" ) {
 
             // check if each reward has a unique ID
-            $rewardIds = array();
+            $reward_ids = array();
 
-            foreach($rewardData['rewards'] as $reward):
+            foreach( $reward_data['rewards'] as $index => $reward_data ) {
 
-                // check if the reward ID is blank
-                // if it is, throw an error
-                if(trim($reward['unique']) == ""):
+                $reward_data['unique'] = trim( sanitize_text_field( $reward_data['unique'] ) );
+                $reward_data['amount'] = floatval( sanitize_text_field( $reward_data['amount'] ) );
+                $reward_data['description'] = sanitize_text_field( $reward_data['description'] );
+                $reward_data['limit'] = floatval( sanitize_text_field( $reward_data['limit'] ) );
+                $reward_data['delivery'] = sanitize_text_field( $reward_data['delivery'] );
 
-                    WC_Admin_Meta_Boxes::add_error( __( 'Please enter a unique ID for each reward.', $this->slug ) );
-                    return;
+                if( empty( $reward_data['unique'] ) ) {
 
-                endif;
+                    WC_Admin_Meta_Boxes::add_error( __( 'Please enter a unique ID for each reward.', 'iconic-woo-fundraisers' ) );
+
+                }
 
                 // check if the reward ID is in our array
-                if(!in_array($reward['unique'], $rewardIds)):
+                if( !in_array( $reward_data['unique'], $reward_ids ) ) {
 
-                    $rewardIds[] = $reward['unique'];
+                    $reward_ids[] = $reward_data['unique'];
 
                 // if the reward ID is in the array, don't
                 // save the data and add an error
-                else:
+                } else {
 
-                    WC_Admin_Meta_Boxes::add_error( __( 'Sorry, each reward ID must be unique.', $this->slug ) );
-                    return;
+                    WC_Admin_Meta_Boxes::add_error( __( 'Sorry, each reward ID must be unique.', 'iconic-woo-fundraisers' ) );
+                    $reward_data['unique'] = "";
 
-                endif;
+                }
 
                 // check if the date is valid
-                if($reward['delivery'] != "" && !$this->validate_date($reward['delivery'])):
+                if( !empty( $reward_data['delivery'] ) && !$this->validate_date( $reward_data['delivery'] ) ) {
 
-                    WC_Admin_Meta_Boxes::add_error( __( 'Please enter a valid estimated delivery date (YYYY-MM-DD).', $this->slug ) );
-                    return;
+                    WC_Admin_Meta_Boxes::add_error( __( 'Please enter a valid estimated delivery date (YYYY-MM-DD).', 'iconic-woo-fundraisers' ) );
+                    $reward_data['delivery'] = "";
 
-                endif;
+                }
 
-            endforeach;
+                $validated_reward_data['rewards'][ $index ] = $reward_data;
 
-        endif;
+            }
 
-        $fundData = array(
-            'goal' => $goal,
-            'rewards' => $rewardData
-        );
+        }
 
-        update_post_meta( $post_id, $this->slug, $fundData);
+        return $validated_reward_data;
+
     }
 
 /**	=============================
@@ -345,20 +409,28 @@ class Iconic_Woo_Fundraisers {
     *
     ============================= */
 
-    public function validate_date($date) {
-        $date = explode('-', $date);
+    public function validate_date( $date ) {
 
-        $day = (int)$date[2];
-        $month = (int)$date[1];
-        $year = (int)$date[0];
+        $date = explode('-', $date);
 
         if(!is_array($date) || count($date) != 3)
             return false;
 
-        if(!is_int($day) || !is_int($month) || !is_int($year))
+        $day = isset( $date[2] ) ? $date[2] : "";
+        $month = isset( $date[1] ) ? $date[1] : "";
+        $year = isset( $date[0] ) ? $date[0] : "";
+
+        if(!is_numeric($day) || !is_numeric($month) || !is_numeric($year))
+            return false;
+
+        if( $day > 31 )
+            return false;
+
+        if( $month > 12 )
             return false;
 
         return checkdate( $month, $day, $year);
+
     }
 
 /**	=============================
@@ -437,7 +509,10 @@ class Iconic_Woo_Fundraisers {
         $product = get_product( $product_id );
 
         if ($product && $product->product_type == "fundraiser") {
-            $cart_item_data[$this->cart_data_key]['reward'] = ( isset( $_POST['reward'] ) && $_POST['reward'] != '') ? $_POST['reward'] : '';
+
+            $reward = isset( $_POST['reward'] ) ? sanitize_text_field( $_POST['reward'] ) : "";
+            $cart_item_data[$this->cart_data_key]['reward'] = $reward;
+
         }
 
         return $cart_item_data;
@@ -519,8 +594,8 @@ class Iconic_Woo_Fundraisers {
             $product = get_product($cart_item['product_id']);
             $reward = $product->get_reward($data['reward']);
 
-            wc_add_order_item_meta( $item_id, __( 'Reward ID', $this->slug), $data['reward'] );
-            wc_add_order_item_meta( $item_id, __( 'Reward', $this->slug), $reward['description'] );
+            wc_add_order_item_meta( $item_id, __( 'Reward ID', 'iconic-woo-fundraisers' ), $data['reward'] );
+            wc_add_order_item_meta( $item_id, __(  'Reward', 'iconic-woo-fundraisers' ), $reward['description'] );
         }
     }
 
@@ -564,39 +639,42 @@ class Iconic_Woo_Fundraisers {
 
         if( $product->product_type == "fundraiser" ) {
 
+            $price = isset( $_POST['price'] ) ? floatval( sanitize_text_field( $_POST['price'] ) ) : false;
+
             // validate donation amount
-            if( isset($_POST['price']) && $_POST['price'] <= 0 )
-            {
-                wc_add_notice( __( "Please enter a valid donation amount.", $this->slug ), 'error' );
+            if( $price <= 0 ) {
+
+                wc_add_notice( __( "Please enter a valid donation amount.", 'iconic-woo-fundraisers' ), 'error' );
                 return false;
+
             }
 
+            $reward = isset( $_POST['reward'] ) ? sanitize_text_field( $_POST['reward'] ) : false;
+
             // check if donation amount allows for selected reward
-            if( isset($_POST['price']) && ( isset($_POST['reward']) && $_POST['reward'] != "" ) )
-            {
+            if( $price && !empty( $reward ) ) {
+
                 $product = get_product( $product_id );
-                $theReward = $product->get_reward($_POST['reward']);
+                $theReward = $product->get_reward( $reward );
 
-                if($theReward)
-                {
+                if($theReward) {
 
-                    if($_POST['price'] < $theReward['amount'])
-                    {
+                    if( $price < $theReward['amount'] ) {
+
                         wc_add_notice(
                             sprintf(
-                                __( "Your selected reward requires a donation of at least %s.", $this->slug ),
-                                wc_price($theReward['amount'])
+                                __( "Your selected reward requires a donation of at least %s.", 'iconic-woo-fundraisers' ),
+                                wc_price( $theReward['amount'] )
                             ),
                             'error'
                         );
                         return false;
+
                     }
 
-                }
-                else
-                {
+                } else {
 
-                    wc_add_notice( __( "Please choose a valid reward.", $this->slug ), 'error' );
+                    wc_add_notice( __( "Please choose a valid reward.", 'iconic-woo-fundraisers' ), 'error' );
                     return false;
 
                 }
@@ -606,27 +684,34 @@ class Iconic_Woo_Fundraisers {
     		$woocommerce_max_qty = 1;
     		$already_in_cart = $this->get_qty_alread_in_cart( $product_id );
 
-    		if ( ! empty( $already_in_cart ) )
-    		{
+    		if ( ! empty( $already_in_cart ) ) {
+
     			// there was already a quantity of this item in cart prior to this addition
     			// Check if the total of $already_in_cart + current addition quantity is more than our max
     			$new_qty = $already_in_cart + $quantity;
-    			if ( $new_qty > $woocommerce_max_qty )
-    			{
+
+    			if ( $new_qty > $woocommerce_max_qty ) {
+
     				// oops. too much.
     				$product = get_product( $product_id );
     				$product_title = $product->post->post_title;
 
-    				wc_add_notice( __( "Sorry, you can only donate once.", $this->slug ), 'error' );
+    				wc_add_notice( __( "Sorry, you can only donate once.", 'iconic-woo-fundraisers' ), 'error' );
 
     				$passed = false;
+
     			} else {
+
     				// addition qty is okay
     				$passed = true;
+
     			}
+
     		} else {
+
     			// none were in cart previously, and we already have input limits in place, so no more checks are needed
     			$passed = true;
+
     		}
 
 		}
@@ -680,15 +765,17 @@ class Iconic_Woo_Fundraisers {
 
             $thousands_sep  = wp_specialchars_decode( stripslashes( get_option( 'woocommerce_price_thousand_sep' ) ), ENT_QUOTES );
             $decimal_sep = stripslashes( get_option( 'woocommerce_price_decimal_sep' ) );
-            $_POST['price'] = str_replace($thousands_sep, '', $_POST['price']);
-            $_POST['price'] = str_replace($decimal_sep, '.', $_POST['price']);
 
-            $_POST['price'] = wc_format_decimal($_POST['price']);
+            $price = isset( $_POST['price'] ) ? floatval( sanitize_text_field( $_POST['price'] ) ) : false;
+            $price = str_replace($thousands_sep, '', $price);
+            $price = str_replace($decimal_sep, '.', $price);
+            $price = wc_format_decimal($price);
 
             if($cart_item_key == $key) {
-                $values['data']->set_price($_POST['price']);
-                $woocommerce->session->__set($key.'_donate_price', $_POST['price']);
+                $values['data']->set_price( $price );
+                $woocommerce->session->__set($key.'_donate_price', $price);
             }
+
         }
 
         return $key;
