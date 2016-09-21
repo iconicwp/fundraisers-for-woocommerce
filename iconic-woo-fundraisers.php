@@ -7,8 +7,9 @@ Version: 1.0.5
 Author: James Kemp
 */
 
-if ( !in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) )
-    return false;
+// If this file is called directly, abort.
+if ( ! defined( 'WPINC' ) )
+    wp_die();
 
 class Iconic_Woo_Fundraisers {
 
@@ -27,6 +28,9 @@ class Iconic_Woo_Fundraisers {
     ============================= */
 
 	public function __construct() {
+
+    	if( !$this->is_plugin_active( 'woocommerce/woocommerce.php') )
+            return;
 
 		$this->plugin_path = plugin_dir_path( __FILE__ );
         $this->plugin_url = plugin_dir_url( __FILE__ );
@@ -858,6 +862,42 @@ class Iconic_Woo_Fundraisers {
         }
 
         return $template;
+    }
+
+    /**
+     * Check whether the plugin is active.
+     *
+     * @since 1.0.1
+     *
+     * @param string $plugin Base plugin path from plugins directory.
+     * @return bool True if inactive. False if active.
+     */
+    public function is_plugin_active( $plugin ) {
+
+        return in_array( $plugin, (array) get_option( 'active_plugins', array() ) ) || $this->is_plugin_active_for_network( $plugin );
+
+    }
+
+    /**
+     * Check whether the plugin is active for the entire network.
+     *
+     * Only plugins installed in the plugins/ folder can be active.
+     *
+     * Plugins in the mu-plugins/ folder can't be "activated," so this function will
+     * return false for those plugins.
+     *
+     * @since 1.0.1
+     *
+     * @param string $plugin Base plugin path from plugins directory.
+     * @return bool True, if active for the network, otherwise false.
+     */
+    public function is_plugin_active_for_network( $plugin ) {
+        if ( !is_multisite() )
+            return false;
+        $plugins = get_site_option( 'active_sitewide_plugins');
+        if ( isset($plugins[$plugin]) )
+            return true;
+        return false;
     }
 
 }
