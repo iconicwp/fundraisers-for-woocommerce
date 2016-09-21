@@ -123,11 +123,9 @@ var deps = {
 	// The default task (called when you run `gulp` from cli)
 	gulp.task('default', ['watch']);
 
-/**	=============================
-    *
-    * Compile for CodeCanyon
-    *
-    ============================= */
+    /**
+     * Create plugin zip
+     */
 
 	// Run to compile plugin zip
 	gulp.task('prepare_plugin_files', function () {
@@ -151,22 +149,25 @@ var deps = {
 
 	});
 
-	// Run to compile zip of plugin, readme and licenses
-	gulp.task('create_main_zip', ['create_plugin_zip'], function () {
+    /**
+     * Prepare for SVN by moving files to trunk
+     *
+     * Moves src files to trunk, and also creates the
+     * plugin zip for the repo
+     */
 
-	    return gulp.src(paths.cc_src, {cwd: __dirname + "/dist"})
-	        .pipe(zip('main-files-'+plugin_filename+'.zip'))
-	        .pipe(gulp.dest('codecanyon'))
-	        .pipe(notify({ message: 'Main files zipped for CodeCanyon' }));
+    // Run to compile plugin zip
+    gulp.task('move_to_trunk', ['create_plugin_zip'], function () {
 
-	});
+        del(['svn/trunk']);
 
-	// RUN THIS TO COMPILE FOR CC (gulp compile)
-	gulp.task('compile', ['deps', 'create_main_zip'], function(){
+        gulp.src(paths.src, {base: "."})
+            .pipe( gulp.dest('svn/trunk') )
+            .pipe( notify({ message: 'Plugin moved to trunk' }) );
 
-        gulp.src('dist/'+plugin_zip_name, { base: './dist' })
-            .pipe(gulp.dest('codecanyon'));
-
-    	del(['tmp']);
+        del(['tmp']);
 
     });
+
+	// RUN THIS TO COMPILE FOR CC (gulp compile)
+	gulp.task('compile', ['move_to_trunk']);
