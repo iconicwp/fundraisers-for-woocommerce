@@ -14,7 +14,7 @@ This plugin allows you to create fundraiser style products in your WooCommerce s
 
 WooCommerce Fundraisers was created to integrate seamlessly into WooCommerce. Each fundraiser you create is a WooCommerce product, configured in the same way you’d configure a simple or variable product.
 
-Now you can easily take donations for your next invention, a charity event, or your upcoming wedding; whatever you’re reason, creating a fundraiser couldn’t be more simple.
+Now you can easily take donations for your next invention, a charity event, or your upcoming wedding; whatever your reason, creating a fundraiser couldn’t be more simple.
 
 WooCommerce Fundraisers makes it easy to set your target goals. Choose between an amount you need to raise, a deadline date, both, or a campaign that never ends.
 
