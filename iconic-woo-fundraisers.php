@@ -73,6 +73,7 @@ class Iconic_Woo_Fundraisers {
 
 	    // Run on admin
         if(is_admin()) {
+
             add_filter( 'product_type_selector',                        array( $this, 'add_product_type' ) );
             add_filter( 'woocommerce_product_data_tabs',                array( $this, 'edit_admin_product_tabs' ) );
             add_action( 'woocommerce_product_write_panels',             array( $this, 'admin_product_tab_content' ) );
