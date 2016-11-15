@@ -28,6 +28,7 @@ if(class_exists('WC_Product')):
         public function __construct( $product ) {
             $this->product_type = 'fundraiser';
             $this->virtual = 'yes';
+            $this->sold_individually = 'yes';
 
             parent::__construct( $product );
         }

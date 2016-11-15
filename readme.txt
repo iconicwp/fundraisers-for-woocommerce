@@ -44,6 +44,7 @@ To install the plugin:
 
 v1.0.6 (15/11/16)
 [fix] Fix product url in catalog
+[update] Enable sold individually
 
 v1.0.5 (13/09/16)
 [update] Iconic dashboard
