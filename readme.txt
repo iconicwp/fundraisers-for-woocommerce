@@ -41,6 +41,10 @@ To install the plugin:
 4.  The plugin is now installed and activated.
 
 == Changelog ==
+
+v1.0.6 (15/11/16)
+[fix] Fix product url in catalog
+
 v1.0.5 (13/09/16)
 [update] Iconic dashboard
 [update] Enqueue Magnific properly

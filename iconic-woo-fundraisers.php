@@ -3,7 +3,7 @@
 Plugin Name: Fundraisers for WooCommerce
 Plugin URI: https://iconicwp.com/products/fundraisers-for-woocommerce/
 Description: Raise funds and offer rewards for any event using your WooCommerce store.
-Version: 1.0.5
+Version: 1.0.6
 Author: Iconic
 Author URI: https://iconicwp.com
 */
@@ -17,7 +17,7 @@ class Iconic_Woo_Fundraisers {
     public $name = 'Fundraisers for WooCommerce';
     public $shortname = 'Fundraisers';
     public $slug = 'iconic-woo-fundraisers';
-    public $version = "1.0.5";
+    public $version = "1.0.6";
     public $plugin_path;
     public $plugin_url;
     public $cart_data_key;
