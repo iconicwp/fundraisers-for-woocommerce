@@ -1,7 +1,7 @@
 === Fundraisers for WooCommerce ===
 Contributors: iconicwp
 Requires at least: 4.6
-Tested up to: 4.6.1
+Tested up to: 4.6.5
 Stable tag: trunk
 
 Raise funds and offer rewards for any event using your WooCommerce store.
@@ -24,13 +24,13 @@ As an admin, you can view all donations for a specific fundraiser on a single pa
 
 ### Other Iconic Plugins
 
-Check out some of our other premium [WooCommerce plugins](https://iconicwp.com/products/):
+Check out some of the other premium [WooCommerce plugins](https://iconicwp.com/) from Iconic:
 
-* [WooThumbs - Awesome Product Imagery](https://codecanyon.net/item/woothumbs-awesome-product-imagery/2867927?ref=iconicwp)
-* [WooCommerce Show Single Variations](https://codecanyon.net/item/woocommerce-show-single-variations/13523915?ref=iconicwp)
-* [WooCommerce Attribute Swatches](https://codecanyon.net/item/woocommerce-attribute-swatches/16435757?ref=iconicwp)
-* [WooCommerce Quickview](https://codecanyon.net/item/woocommerce-quickview/4378284?ref=iconicwp)
-* [WooCommerce Delivery Slots](https://codecanyon.net/item/woocommerce-delivery-slots/7323634?ref=iconicwp)
+* [WooThumbs - Additional Variation Images and Customisable Image Gallery](https://iconicwp.com/products/woothumbs/)
+* [WooCommerce Show Single Variations](https://iconicwp.com/products/woocommerce-show-single-variations/)
+* [WooCommerce Attribute Swatches](https://iconicwp.com/products/woocommerce-attribute-swatches/)
+* [WooCommerce Quickview](https://iconicwp.com/products/woocommerce-quickview/)
+* [WooCommerce Delivery Slots](https://iconicwp.com/products/woocommerce-delivery-slots/)
 
 == Installation ==
 To install the plugin:
